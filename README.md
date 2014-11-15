@@ -1,19 +1,18 @@
 README.md
 =========
 
-File_path_normalizer is a class used to normalize PHP file paths without several of the shortcomings of the
-built-in functions.
+File_path_normalizer is a class used to normalize PHP file paths without several
+of the shortcomings of the built-in functions.
 
 ## Why you should use it
 
 So you maybe wondering why a class like this is even needed since PHP has many
 built-in functions that let you do almost anything needed to clean up a given
-file name and path. While PHP does have many functions that are made
-to work with paths and file names, it also has a wide range of string and
-regex functions as well that can be useful. However, the many edge cases and 
-limitations of these functions can lead to bugs and, in the case of web based 
-applications, possible security issues when parts of the filesystem are unexpectedly
-exposed.
+file name and path. PHP does have many functions that are made to work with
+paths and file names plus a wide range of string and regex functions that can be
+useful, however there are many edge cases and limitations in these functions can
+lead to bugs and, in the case of any web based applications, possible security
+issues when parts of the filesystem are unexpectedly exposed.
 
 Just like in a web page where you must protect from Javascript XSS and possible
 database exposure, you must also ensure where user input might be used to form 
@@ -22,7 +21,7 @@ file system paths or names that it is clean and not doing something unexpected.
 Even if you are not forming paths using any user input the OS you use for PHP
 affects the file path and how many of the file functions work. Probably one of
 the best know differences is the use of back-slashes and drive letters in
-Windows paths but forward slashes and the unified file paths of Linux/Unix and
+Windows paths vs forward slashes and the unified file paths of Linux/Unix and
 Mac OS X.
 
 Below are some examples to make the issues clearer.
@@ -49,8 +48,8 @@ $path = 'C:\\Windows\\System32\\cmd.exe /c del /q *.*';
 print shell_exec($path);
 ```
 
-This code could end up deleting all the files in the current directory on Windows
-systems depending on the privileges of the user running the code.
+This code could end up deleting all the files in the current directory on
+Windows systems depending on the privileges of the user running the code.
 
 Here's an Unix version of the same thing.
 
@@ -60,8 +59,8 @@ $path = '/bin/bash -c "rm -f *.*"';
 print shell_exec($path);
 ```
 
-Now most good developers would do some checks on the file path in most cases
-something like this for example:
+Now most good developers would do some checks on the file path something like
+this for example:
 
 ```
 <?php
@@ -88,10 +87,11 @@ print shell_exec($path);
 ```
 
 Protecting against something like that is much harder. Most programmers try to
-resolve their path using `realpath()` but there are some are some edge cases
-where it can return some unexpected results. 
+resolve their path using `realpath()` but there are some edge cases where it can
+return some unexpected results. 
 
-In this example I'll give several of the known edge cases you might need to handle.
+In this example I'll give several of the known edge cases you might need to
+handle.
 
 ```
 <?php
@@ -142,10 +142,10 @@ up to the top of the directory structure it in effect treats any additional
 */
 ```
 
-As you can see from these examples, great care is needed when using realpath().
+As you can see from these examples, great care is needed when using `realpath()`.
 Some of the other file functions have similar issues, especially when dealing
 with relative paths. In the next section I'll show how `FilePathNormalizer` can
-help solve some of these edge cases and act like an improved realpath()
+help solve some of these edge cases and act like an improved `realpath()`
 replacement in many cases.
 
 ## How the class helps
@@ -155,24 +155,24 @@ First here are a few of the reasons programmers use relative paths:
   * Relative paths are usually shorter and so easier to work with.
   * The path is wholly or in part taken from user input and maybe relative.
   * Using relative paths means the actual location where the application is
-  installed doesn't really matter -- only that the internal application directory
-  structure is always the same.
+  installed doesn't really matter -- only that the internal application
+  directory structure is always the same.
   
 There probably are some other reasons but the ones above are some of the most
 common ones I see most often in both my code and other developers' code. We also
 know from the section above that though `realpath()` can be used it has some
-issues you need to must resolve if you are going use it.
+issues you must resolve if you are going use it.
 
-One way to work around these issues would be to wrap `realpath()` in a
-class and try adding code to handle all of the undesired problems. Instead I
-choose a different strategy by NOT even using it and trying to make something that has
-the most of same abilities I like of `realpath()` but without the shortcomings.
+One way to work around these issues would be to wrap `realpath()` in a class and
+try adding code to handle all of the undesired problems. Instead I choose a
+strategy that doesn't even using it but that has the most of same abilities I
+like of `realpath()` but without some of its shortcomings.
 
-I also wanted something that works with both Windows and Unix paths but allows me
-act like I'm always working with Unix paths.
+I also wanted something that works with both Windows and Unix paths but allows
+me act like I'm always working with Unix paths.
 
-So the best way I know to show why I think `FilePathNormalizer` is better is
-with examples of how it handles some of the edge cases I give above.
+The best way to show why I think `FilePathNormalizer` is better is with examples
+of how it handles some of the edge cases I give above.
 
 ```
 <?php
@@ -231,31 +231,45 @@ other things the class does to make working with paths easier.
 
 ## Dealing With Path Separators
 
-When run on Windows systems, PHP allows both front-slashes and back-slashes to
-be used for directory separators in a path. It generally not a good idea to use
-both in a single path but it does seem to work most of the time. When run on Unix-
-based systems, PHP treats back-slashes not as separators but as escapes or merely
-even part of the name in that piece of the path in some cases. Since PHP and
-Windows itself actually allows you to use front-slashes it best to simply replace any
-back-slashes with front-slashes and not have to worry about mixing them.
+When run on Windows systems, PHP allows both front-slashes(FS) and
+back-slashes(BS) to be used for directory separators in a path. It generally
+_not_ a good idea to use both in a single path but seems to work some cases.
+When run on Unix-based systems, PHP treats BS not as separators but as escapes
+or merely even part of the name in that piece of the path in some cases. Since
+PHP and Windows itself actually allows you to use FSes its best to just replace
+any BSes with FSes and not have to worry about mixing them.
 
-Note that though Windows itself does allow both `cmd.exe` and `Windows Explorer` 
-only seem to understand and allow back-slashes as separators. The first thing that
-`FilePathNormalizer` do is to convert all back-slashes into forward-slashes which 
-makes working with them much easier overall.
+Note that though Windows itself does allow either `cmd.exe` and
+`Windows Explorer` only seem to understand and allow BSes as separators.The
+first thing that `FilePathNormalizer` does is to convert all BSes into FSes
+which makes working with the paths much easier overall. Another thing
+`normalizePath()` does is to normalize the path with a trailing FS so a path
+like `/my/web/app` would become `/my/web/app/`. No more 'Do I need a separator
+or not?' questions when adding file names to a path.
 
-I don't understand this paragraph. Why is it so helpful in this case? Can you rewrite this a little more concisely?
-Other area where `normalizePath()` helps to make things simpler is it always
-makes sure the path ends with a forward-slash so if you are adding a file name 
-to it there is never a need to add one yourself which you usually needed to do before.
-This in some cases cause paths to have two FSes together which doesn't normal cause a
-problem as the second one is ignore or treated like './' which is a no-op in the
-middle of a path. This also helps keep many cases of path with file names from
-cause some problems like when you receive `/bin/bash -c ...` it would be turned
-into `/bin/bash -c .../` which in most cases will cause an error instead of
-executing like was intended. Note that it is still possible craft paths with
-command file names that will execute unexpected things but it does make it a
-little harder in most cases.
+## Not Just Local
+
+File functions in PHP are in many ways unique when compared with many other
+programming languages in they aren't just used to access files on the local
+system but, if allowed, they can be used to access file on another system. Using
+something like
+`https://github.com/Dragonrun1/file_path_normalizer/blob/master/FilePathNormalizer.php`
+is possible. In PHP the `https://` part is called a wrapper and in some cases
+you can even use multiple wrappers with each being past the result of the inner
+wrapper. For example you could do:
+`zip://ftp://my/ftp/site/sample.zip` and PHP will use FTP to get the
+`sample.zip` file from the site and than unzip it as well as long as both
+wrappers are installed. Most wrapper handlers are written in C code but they can
+be written in PHP as well. A good example of this is
+[vsfStream](https://github.com/mikey179/vfsStream) which can be used as a
+virtual file system for unit testing.
+
+In the next section I'll show why this is important when using
+`FilePathNormalizer`.
+
+## Valid Path
+
+WIP
 
 ## Summary
 
