@@ -4,6 +4,7 @@ README.md
 File_path_normalizer is a class used to normalize PHP file paths without several
 of the shortcomings of the built-in functions.
 
+
 ## Why you should use it
 
 So you maybe wondering why a class like this is even needed since PHP has many

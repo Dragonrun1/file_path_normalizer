@@ -6,7 +6,7 @@
  *
  * LICENSE:
  * This file is part of file_path_normalizer which is used to normalize PHP file
- * paths without several of the short comes of the built-in functions.
+ * paths without several of the shortcomings of the built-in functions.
  * Copyright (C) 2014 Michael Cummings
  *
  * This program is free software: you can redistribute it and/or modify it
@@ -36,7 +36,7 @@ use InvalidArgumentException;
 /**
  * Class FilePathNormalizer
  */
-class FilePathNormalizer
+class FilePathNormalizer implements FilePathNormalizerInterface
 {
     /**
      * @param string $file
