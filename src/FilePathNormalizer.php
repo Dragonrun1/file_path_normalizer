@@ -50,26 +50,17 @@ class FilePathNormalizer implements FilePathNormalizerInterface
     public function normalizeFile($file, $absoluteRequired = true)
     {
         if (!is_string($file)) {
-            $mess = 'String expected but given ' . gettype($file);
+            $mess = 'String expected but was given ' . gettype($file);
             throw new InvalidArgumentException($mess);
         }
-        $file = str_replace('\\', '/', $file);
-        // vfsStream does NOT allow absolute path.
-        if ('vfs://' == substr($file, -6)) {
-            $absoluteRequired = false;
-        }
-        if (false !== strpos($file, '/')) {
-            $last = strlen($file) - strpos(strrev($file), '/');
-            $file = $this->normalizePath(substr($file, 0, $last),
-                    $absoluteRequired)
-                . substr($file, ++$last);
-        } elseif (true == $absoluteRequired) {
-            $mess = 'Absolute required but file name has NO path part, was given '
-                . $file;
+        list($fileName, $path) = explode('/',
+            strrev(str_replace('\\', '/', $file)), 2);
+        if (empty($fileName)) {
+            $mess = 'File name can NOT be empty but was given ' . $file;
             throw new DomainException($mess);
         }
-        return $this->normalizePath(dirname($file), $absoluteRequired)
-        . pathinfo($file, PATHINFO_BASENAME | PATHINFO_EXTENSION);
+        return $this->normalizePath(strrev($path),
+            $absoluteRequired) . strrev($fileName);
     }
     /**
      * Used to normalize a file path without all the short comings of the
@@ -90,7 +81,7 @@ class FilePathNormalizer implements FilePathNormalizerInterface
     public function normalizePath($path, $absoluteRequired = true)
     {
         if (!is_string($path)) {
-            $mess = 'String expected but given ' . gettype($path);
+            $mess = 'String expected but was given ' . gettype($path);
             throw new InvalidArgumentException($mess);
         }
         $path = str_replace('\\', '/', $path);
