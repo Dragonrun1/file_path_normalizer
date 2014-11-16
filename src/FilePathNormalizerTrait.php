@@ -30,22 +30,18 @@
  */
 namespace FilePathNormalizer;
 
-use LogicException;
-
 /**
  * Trait FilePathNormalizerTrait
  */
 trait FilePathNormalizerTrait
 {
     /**
-     * @throws LogicException
      * @return FilePathNormalizerInterface
      */
     protected function getFpn()
     {
         if (empty($this->fpn)) {
-            $mess = 'Tried to get $fpn before it was set';
-            throw new LogicException($mess);
+            $this->fpn = new FilePathNormalizer();
         }
         return $this->fpn;
     }
