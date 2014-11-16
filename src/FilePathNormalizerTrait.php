@@ -36,16 +36,6 @@ namespace FilePathNormalizer;
 trait FilePathNormalizerTrait
 {
     /**
-     * @return FilePathNormalizerInterface
-     */
-    protected function getFpn()
-    {
-        if (empty($this->fpn)) {
-            $this->fpn = new FilePathNormalizer();
-        }
-        return $this->fpn;
-    }
-    /**
      * @param FilePathNormalizerInterface $value
      *
      * @return self
@@ -54,6 +44,16 @@ trait FilePathNormalizerTrait
     {
         $this->fpn = $value;
         return $this;
+    }
+    /**
+     * @return FilePathNormalizerInterface
+     */
+    protected function getFpn()
+    {
+        if (empty($this->fpn)) {
+            $this->fpn = new FilePathNormalizer();
+        }
+        return $this->fpn;
     }
     /**
      * @type FilePathNormalizerInterface $fpn
