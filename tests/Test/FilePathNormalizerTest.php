@@ -141,7 +141,7 @@ class FilePathNormalizerTest extends PHPUnit_Framework_TestCase
     {
         $regEx = '/^Path is NOT valid, was given /';
         $this->setExpectedExceptionRegExp('DomainException', $regEx);
-        $path = PHP_EOL;
+        $path = "\r\n";
         $this->object->normalizePath($path);
     }
     /**
