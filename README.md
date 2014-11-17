@@ -1,6 +1,10 @@
 README.md
 =========
 
+Master: [![Build Status](https://travis-ci.org/Dragonrun1/file_path_normalizer.svg?branch=master)](https://travis-ci.org/Dragonrun1/file_path_normalizer)
+
+Master: [![Coverage Status](https://img.shields.io/coveralls/Dragonrun1/file_path_normalizer.svg?branch=master)](https://coveralls.io/r/Dragonrun1/file_path_normalizer?branch=master)
+
 File_path_normalizer is a class used to normalize PHP file paths without several
 of the shortcomings of the built-in functions.
 
