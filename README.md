@@ -277,5 +277,3 @@ In the next section I'll show why this is important when using
 WIP
 
 ## Summary
-
-

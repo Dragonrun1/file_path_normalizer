@@ -23,6 +23,7 @@
 *.xsl text eol=lf
 *.yaml text eol=lf
 *.yml text eol=lf
+phpunit.xml.dist text eol=lf
 LICENSE text eol=lf
 README text eol=lf
 
