@@ -9,7 +9,6 @@
 # Declare files that will always have CRLF line endings on checkout.
 *.ini text eol=crlf
 *.txt text eol=crlf
-*.yaml text eol=crlf
 
 # Declare files that will always have LF line endings on checkout.
 .gitattributes text eol=lf
@@ -23,6 +22,8 @@
 *.xml text eol=lf
 *.xsd text eol=lf
 *.xsl text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf
 phpunit.xml.dist text eol=lf
 LICENSE text eol=lf
 README text eol=lf
