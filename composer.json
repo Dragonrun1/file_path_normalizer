@@ -8,6 +8,7 @@
         }
     },
     "autoload-dev": {
+        "psr-0": {"Spec\\": "specs/"},
         "psr-4": {
             "FilePathNormalizer\\Test\\": ["tests/"]
         }
@@ -18,13 +19,18 @@
             "email": "mgcummings@yahoo.com"
         }
     ],
+    "config": {
+        "optimize-autoloader": true
+    },
     "minimum-stability": "stable",
     "require": {
-        "php": ">=5.3.1"
+        "php": ">=5.4.1"
     },
     "require-dev": {
-        "phpunit/phpunit": "~4.3",
-        "phpunit/phpunit-skeleton-generator": "2.0.*@dev",
-        "satooshi/php-coveralls": "dev-master"
+        "dragonrun1/phpspec": "2.1.2",
+        "henrikbjorn/phpspec-code-coverage": "1.0.1",
+        "phpunit/phpunit": "<4.6",
+        "satooshi/php-coveralls": "dev-master",
+        "symfony/console": "<2.7"
     }
 }

@@ -1,5 +1,5 @@
 # Set default behaviour, in case users don't have core.autocrlf set.
-* text eol=crlf
+* text eol=lf
 
 # Explicitly declare text files we want to always be normalized and converted
 # to native line endings on checkout.
@@ -7,13 +7,13 @@
 #*.h text
 
 # Declare files that will always have CRLF line endings on checkout.
-*.ini text eol=crlf
 *.txt text eol=crlf
 
 # Declare files that will always have LF line endings on checkout.
 .gitattributes text eol=lf
 .gitignore text eol=lf
 *.crt text eol=lf
+*.ini text eol=lf
 *.json text eol=lf
 *.md text eol=lf
 *.pem text eol=lf

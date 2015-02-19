@@ -5,10 +5,13 @@
          stopOnError="true"
          stopOnFailure="true">
     <filter>
+        <whitelist>./</whitelist>
         <blacklist>
+            <directory>composer</directory>
+            <directory>docs</directory>
+            <directory>specs</directory>
             <directory>tests</directory>
             <directory>vendor</directory>
-            <directory>docs</directory>
         </blacklist>
     </filter>
     <logging>

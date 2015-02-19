@@ -238,7 +238,7 @@ other things the class does to make working with paths easier.
 
 When run on Windows systems, PHP allows both front-slashes(FS) and
 back-slashes(BS) to be used for directory separators in a path. It generally
-_not_ a good idea to use both in a single path but seems to work some cases.
+_not_ a good idea to use both in a single path but seems to work in some cases.
 When run on Unix-based systems, PHP treats BS not as separators but as escapes
 or merely even part of the name in that piece of the path in some cases. Since
 PHP and Windows itself actually allows you to use FSes its best to just replace
@@ -269,11 +269,24 @@ be written in PHP as well. A good example of this is
 [vsfStream](https://github.com/mikey179/vfsStream) which can be used as a
 virtual file system for unit testing.
 
-In the next section I'll show why this is important when using
-`FilePathNormalizer`.
+In the next section I'll go over wrappers in more detail and how
+`FilePathNormalizer` does basic validating of them for you.
 
-## Valid Path
+## Wrappers
 
-WIP
+Wrappers can be used for many things like compression and decompression `zip://`
+or determining the default port and way of connecting to another system
+`http://` vs `https://`. Also like stated in the last section in some case you
+are allowed to nest them. `FilePathNormalizer` doesn't try to do a lot of
+validating but it does insure that any include wrappers follow the basic pattern
+of starting with an alphabetic character which is followed by one or more
+alphanumeric characters and ends with `://` and does allows nest wrappers. One
+thing is it only validate them at the beginning of the path so something like
+`http://a.amazing.site/ftp://not.so.amazing.site` will only see the `http://`
+part as the wrapper with the rest just being part of the normal path.
+
+## At The Root
+
+
 
 ## Summary

@@ -2,7 +2,7 @@
 /**
  * Contains FilePathNormalizerTest class.
  *
- * PHP version 5.3
+ * PHP version 5.4
  *
  * LICENSE:
  * This file is part of file_path_normalizer which is used to normalize PHP file
@@ -42,8 +42,7 @@ class FilePathNormalizerTest extends PHPUnit_Framework_TestCase
     /**
      *
      */
-    public function testNormalizeFileIgnoresAbsoluteRequiredForVfsStreamWrapper(
-    )
+    public function testNormalizeFileIgnoresAbsoluteRequiredForVfsStreamWrapper()
     {
         $file = 'vfs://test/dummy.txt';
         $expected = 'vfs://test/dummy.txt';
@@ -54,16 +53,15 @@ class FilePathNormalizerTest extends PHPUnit_Framework_TestCase
      */
     public function testNormalizeFileThrowsDomainExceptionForEmptyFileName()
     {
-        $regEx = '/^File name can NOT be empty but was given [[:print:]]+/';
-        $this->setExpectedExceptionRegExp('DomainException', $regEx);
+        $mess = 'File name can NOT have non-printable characters or be empty';
+        $this->setExpectedException('DomainException', $mess);
         $file = '/test/';
         $this->object->normalizeFile($file);
     }
     /**
      *
      */
-    public function testNormalizeFileThrowsDomainExceptionForRelativePathThatGoesAboveRoot(
-    )
+    public function testNormalizeFileThrowsDomainExceptionForRelativePathThatGoesAboveRoot()
     {
         $regEx = '/^Can NOT go above root path but was given /';
         $this->setExpectedExceptionRegExp('DomainException', $regEx);
@@ -73,10 +71,9 @@ class FilePathNormalizerTest extends PHPUnit_Framework_TestCase
     /**
      *
      */
-    public function testNormalizeFileThrowsDomainExceptionWithRelativePathAndAbsoluteRequired(
-    )
+    public function testNormalizeFileThrowsDomainExceptionWithRelativePathAndAbsoluteRequired()
     {
-        $regEx = '/^Absolute path required but was missing root part, was given /';
+        $regEx = '/^Absolute path required but root part missing, was given /';
         $this->setExpectedExceptionRegExp('DomainException', $regEx);
         $file = 'test/dummy.txt';
         $this->object->normalizeFile($file);
@@ -84,8 +81,7 @@ class FilePathNormalizerTest extends PHPUnit_Framework_TestCase
     /**
      *
      */
-    public function testNormalizeFileThrowsInvalidArgumentExceptionWhenFileIsNotString(
-    )
+    public function testNormalizeFileThrowsInvalidArgumentExceptionWhenFileIsNotString()
     {
         $regEx = '/^String expected but was given /';
         $this->setExpectedExceptionRegExp('InvalidArgumentException', $regEx);
@@ -105,18 +101,21 @@ class FilePathNormalizerTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $this->object->normalizeFile($file));
         $file = 'test/dummy.txt';
         $expected = 'test/dummy.txt';
-        $this->assertEquals($expected,
-            $this->object->normalizeFile($file, false));
+        $this->assertEquals(
+            $expected,
+            $this->object->normalizeFile($file, false)
+        );
         $file = 'test/dummy/dummy.txt';
         $expected = 'test/dummy/dummy.txt';
-        $this->assertEquals($expected,
-            $this->object->normalizeFile($file, false));
+        $this->assertEquals(
+            $expected,
+            $this->object->normalizeFile($file, false)
+        );
     }
     /**
      *
      */
-    public function testNormalizePathIgnoresAbsoluteRequiredForVfsStreamWrapper(
-    )
+    public function testNormalizePathIgnoresAbsoluteRequiredForVfsStreamWrapper()
     {
         $path = 'vfs://test';
         $expected = 'vfs://test/';
@@ -125,8 +124,7 @@ class FilePathNormalizerTest extends PHPUnit_Framework_TestCase
     /**
      *
      */
-    public function testNormalizePathThrowsDomainExceptionForRelativePathThatGoesAboveRoot(
-    )
+    public function testNormalizePathThrowsDomainExceptionForRelativePathThatGoesAboveRoot()
     {
         $regEx = '/^Can NOT go above root path but was given /';
         $this->setExpectedExceptionRegExp('DomainException', $regEx);
@@ -136,21 +134,19 @@ class FilePathNormalizerTest extends PHPUnit_Framework_TestCase
     /**
      *
      */
-    public function testNormalizePathThrowsDomainExceptionWhenPathContainsInvalidCharacter(
-    )
+    public function testNormalizePathThrowsDomainExceptionWhenPathContainsInvalidCharacter()
     {
-        $regEx = '/^Path is NOT valid, was given /';
-        $this->setExpectedExceptionRegExp('DomainException', $regEx);
+        $mess = 'Path can NOT have non-printable characters or be empty';
+        $this->setExpectedException('DomainException', $mess);
         $path = "\r\n";
         $this->object->normalizePath($path);
     }
     /**
      *
      */
-    public function testNormalizePathThrowsDomainExceptionWithRelativePathAndAbsoluteRequired(
-    )
+    public function testNormalizePathThrowsDomainExceptionWithRelativePathAndAbsoluteRequired()
     {
-        $regEx = '/^Absolute path required but was missing root part, was given /';
+        $regEx = '/^Absolute path required but root part missing, was given /';
         $this->setExpectedExceptionRegExp('DomainException', $regEx);
         $path = 'test/dummy';
         $this->object->normalizePath($path);
@@ -158,8 +154,7 @@ class FilePathNormalizerTest extends PHPUnit_Framework_TestCase
     /**
      *
      */
-    public function testNormalizePathThrowsInvalidArgumentExceptionWhenPathIsNotString(
-    )
+    public function testNormalizePathThrowsInvalidArgumentExceptionWhenPathIsNotString()
     {
         $regEx = '/^String expected but was given /';
         $this->setExpectedExceptionRegExp('InvalidArgumentException', $regEx);
@@ -202,24 +197,34 @@ class FilePathNormalizerTest extends PHPUnit_Framework_TestCase
     {
         $path = 'test';
         $expected = 'test/';
-        $this->assertEquals($expected,
-            $this->object->normalizePath($path, false));
+        $this->assertEquals(
+            $expected,
+            $this->object->normalizePath($path, false)
+        );
         $path = 'test://test';
         $expected = 'test://test/';
-        $this->assertEquals($expected,
-            $this->object->normalizePath($path, false));
+        $this->assertEquals(
+            $expected,
+            $this->object->normalizePath($path, false)
+        );
         $path = 'test://test/dummy/..';
         $expected = 'test://test/';
-        $this->assertEquals($expected,
-            $this->object->normalizePath($path, false));
+        $this->assertEquals(
+            $expected,
+            $this->object->normalizePath($path, false)
+        );
         $path = 'test://test//dummy/../..';
         $expected = 'test://';
-        $this->assertEquals($expected,
-            $this->object->normalizePath($path, false));
+        $this->assertEquals(
+            $expected,
+            $this->object->normalizePath($path, false)
+        );
         $path = 'test://test/./dummy/../';
         $expected = 'test://test/';
-        $this->assertEquals($expected,
-            $this->object->normalizePath($path, false));
+        $this->assertEquals(
+            $expected,
+            $this->object->normalizePath($path, false)
+        );
     }
     /**
      *
@@ -245,7 +250,7 @@ class FilePathNormalizerTest extends PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new FilePathNormalizer;
+        $this->object = new FilePathNormalizer();
     }
     /**
      * Tears down the fixture, for example, closes a network connection.

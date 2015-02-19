@@ -7,6 +7,7 @@
  * @since  20141115 22:33
  * @author Michael Cummings <mgcummings@yahoo.com>
  */
+
 namespace FilePathNormalizer\Test;
 
 use FilePathNormalizer\FilePathNormalizer;
@@ -35,6 +36,7 @@ class FilePathNormalizerTraitTest extends PHPUnit_Framework_TestCase
         $reflection = new ReflectionClass(get_class($object));
         $method = $reflection->getMethod($methodName);
         $method->setAccessible(true);
+
         return $method->invokeArgs($object, $parameters);
     }
     /**
@@ -44,6 +46,7 @@ class FilePathNormalizerTraitTest extends PHPUnit_Framework_TestCase
     {
         $fpnt = $this->getMockForTrait('FilePathNormalizer\FilePathNormalizerTrait');
         $this->assertAttributeEmpty('fpn', $fpnt);
+
         return $fpnt;
     }
     /**
@@ -56,7 +59,7 @@ class FilePathNormalizerTraitTest extends PHPUnit_Framework_TestCase
     public function testGetFpnWhenNotSet(
         PHPUnit_Framework_MockObject_MockObject $fpnt
     ) {
-        /**
+        /*
          * @type FilePathNormalizerTrait $fpnt
          */
         $this->assertInstanceOf('FilePathNormalizer\FilePathNormalizerInterface',

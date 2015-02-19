@@ -2,7 +2,7 @@
 /**
  * Contains FilePathNormalizerInterface Interface.
  *
- * PHP version 5.3
+ * PHP version 5.4
  *
  * LICENSE:
  * This file is part of file_path_normalizer which is used to normalize PHP file
@@ -30,37 +30,47 @@
  */
 namespace FilePathNormalizer;
 
-use DomainException;
-use InvalidArgumentException;
-
 /**
  * Interface FilePathNormalizerInterface
  */
 interface FilePathNormalizerInterface
 {
-    /**
-     * @param string $file
-     * @param bool   $absoluteRequired
-     *
-     * @throws DomainException
-     * @throws InvalidArgumentException
-     * @return string
+    /*
+     * These constants are used for the new $options parameter that has replaced
+     * the old $absoluteRequired one.
      */
-    public function normalizeFile($file, $absoluteRequired = true);
+    const ABSOLUTE_ALLOWED = 1;
+    const ABSOLUTE_DISABLED = 2;
+    const ABSOLUTE_REQUIRED = 4;
+    const MODE_DEFAULT = 44;
+    const VFS_ALLOWED = 8;
+    const VFS_DISABLED = 16;
+    const WRAPPER_ALLOWED = 32;
+    const WRAPPER_DISABLED = 64;
+    const WRAPPER_REQUIRED = 128;
+    /**
+     * Used to normalize a file with a path.
+     *
+     * @param string   $file    File with a path.
+     * @param bool|int $options Determines the options FPN uses while
+     *                          validating path.
+     *
+     * @return string Returns the file with a normalized path.
+     */
+    public function normalizeFile($file, $options = self::MODE_DEFAULT);
     /**
      * Used to normalize a file path without all the shortcomings of the
      * built-in functions.
      *
      * This should NOT be used with a string that includes the file name.
      *
-     * @param string $path
-     * @param bool   $absoluteRequired
+     * @param string   $path    Path to be normalized.
+     * @param bool|int $options Determines the options FPN uses while
+     *                          validating path.
      *
      * @see  FilePathNormalizerInterface::normalizeFile() Use to normalize full
      *                                                    path with a file name.
-     * @throws DomainException
-     * @throws InvalidArgumentException
-     * @return string
+     * @return string Returns the normalized path.
      */
-    public function normalizePath($path, $absoluteRequired = true);
+    public function normalizePath($path, $options = self::MODE_DEFAULT);
 }
