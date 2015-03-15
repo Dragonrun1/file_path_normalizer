@@ -7,7 +7,7 @@
  * LICENSE:
  * This file is part of file_path_normalizer which is used to normalize PHP file
  * paths without several of the shortcomings of the built-in functions.
- * Copyright (C) 2014 Michael Cummings
+ * Copyright (C) 2014-2015 Michael Cummings
  *
  * This program is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -24,7 +24,7 @@
  *
  * You should be able to find a copy of this license in the LICENSE file.
  *
- * @copyright 2014 Michael Cummings
+ * @copyright 2014-2015 Michael Cummings
  * @license   http://www.gnu.org/licenses/gpl-2.0.html GNU GPLv2
  * @author    Michael Cummings <mgcummings@yahoo.com>
  */
