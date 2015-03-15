@@ -28,10 +28,15 @@
  * @license   http://www.gnu.org/licenses/gpl-2.0.html GNU GPLv2
  * @author    Michael Cummings <mgcummings@yahoo.com>
  */
+/**
+ * Main namespace.
+ */
 namespace FilePathNormalizer;
 
 /**
  * Interface FilePathNormalizerInterface
+ *
+ * @since 0.2.0 Added to making using class easier.
  */
 interface FilePathNormalizerInterface
 {
@@ -39,14 +44,43 @@ interface FilePathNormalizerInterface
      * These constants are used for the new $options parameter that has replaced
      * the old $absoluteRequired one.
      */
+    /**
+     * Path can be absolute or relative.
+     */
     const ABSOLUTE_ALLOWED = 1;
+    /**
+     * Allows only relative path.
+     */
     const ABSOLUTE_DISABLED = 2;
+    /**
+     * Absolute path required.
+     */
     const ABSOLUTE_REQUIRED = 4;
+    /**
+     * Sets mode that is backwards compatible with earlier versions of File Path Normalizer.
+     *
+     * Absolute path required, Virtual Filesystem Stream allowed, wrapper allowed.
+     */
     const MODE_DEFAULT = 44;
+    /**
+     * Allows use of VFSStream wrapper.
+     */
     const VFS_ALLOWED = 8;
+    /**
+     * Disables use of VFSStream.
+     */
     const VFS_DISABLED = 16;
+    /**
+     * Allows path to have optional wrappers.
+     */
     const WRAPPER_ALLOWED = 32;
+    /**
+     * Disables path from have any wrappers.
+     */
     const WRAPPER_DISABLED = 64;
+    /**
+     * Makes use of one or more wrapper required.
+     */
     const WRAPPER_REQUIRED = 128;
     /**
      * Used to normalize a file with a path.
@@ -56,6 +90,8 @@ interface FilePathNormalizerInterface
      *                          validating path.
      *
      * @return string Returns the file with a normalized path.
+     * @since 0.2.0 Added to making using class easier.
+     * @api
      */
     public function normalizeFile($file, $options = self::MODE_DEFAULT);
     /**
@@ -71,6 +107,8 @@ interface FilePathNormalizerInterface
      * @see  FilePathNormalizerInterface::normalizeFile() Use to normalize full
      *                                                    path with a file name.
      * @return string Returns the normalized path.
+     * @since 0.2.0 Added to making using class easier.
+     * @api
      */
     public function normalizePath($path, $options = self::MODE_DEFAULT);
 }

@@ -28,11 +28,15 @@
  * @license   http://www.gnu.org/licenses/gpl-2.0.html GNU GPLv2
  * @author    Michael Cummings <mgcummings@yahoo.com>
  */
-
+/**
+ * Main namespace.
+ */
 namespace FilePathNormalizer;
 
 /**
  * Trait FilePathNormalizerTrait
+ *
+ * @since 0.2.0 Added to making using class easier.
  */
 trait FilePathNormalizerTrait
 {
@@ -42,24 +46,26 @@ trait FilePathNormalizerTrait
      * @param FilePathNormalizerInterface|null $value Instance to use.
      *
      * @return $this Fluent interface.
+     * @since 0.2.0 Added to making using class easier.
+     * @api
      */
     public function setFpn(FilePathNormalizerInterface $value = null)
     {
         $this->fpn = $value;
-
         return $this;
     }
     /**
      * Get the instance of FilePathNormalizerInterface.
      *
      * @return FilePathNormalizerInterface Return the instance.
+     * @since 0.2.0 Added to making using class easier.
+     * @api
      */
     protected function getFpn()
     {
         if (null === $this->fpn) {
             $this->fpn = new FilePathNormalizer();
         }
-
         return $this->fpn;
     }
     /**

@@ -28,10 +28,15 @@
  * @license   http://www.gnu.org/licenses/gpl-2.0.html GNU GPLv2
  * @author    Michael Cummings <mgcummings@yahoo.com>
  */
+/**
+ * Main namespace.
+ */
 namespace FilePathNormalizer;
 
 /**
  * Class FilePathNormalizer
+ *
+ * @since 0.1.0 The heart of the project.
  */
 class FilePathNormalizer implements FilePathNormalizerInterface
 {
@@ -41,6 +46,7 @@ class FilePathNormalizer implements FilePathNormalizerInterface
      * @uses FilePathNormalizer::normalizePath()
      * @throws \DomainException
      * @throws \InvalidArgumentException
+     * @since 0.1.0 The heart of the project.
      */
     public function normalizeFile($file, $options = self::MODE_DEFAULT)
     {
@@ -62,6 +68,7 @@ class FilePathNormalizer implements FilePathNormalizerInterface
      * @uses FilePathNormalizer::cleanPartsPath()
      * @throws \DomainException
      * @throws \InvalidArgumentException
+     * @since 0.1.0 The heart of the project.
      */
     public function normalizePath($path, $options = self::MODE_DEFAULT)
     {
@@ -110,6 +117,8 @@ class FilePathNormalizer implements FilePathNormalizerInterface
      * Checks if given path is valid.
      *
      * @param string $path Path to be checked.
+     *
+     * @since 1.1.0-dev Absolute required to options conversion.
      */
     protected function checkPathParameter($path)
     {
@@ -123,10 +132,13 @@ class FilePathNormalizer implements FilePathNormalizerInterface
         }
     }
     /**
+     * Cleans up the actual path part of the given string.
+     *
      * @param string $path
      *
-     * @throws \DomainException
      * @return string[]
+     * @throws \DomainException
+     * @since 0.1.0 The heart of the project.
      */
     protected function cleanPartsPath($path)
     {
@@ -158,6 +170,8 @@ class FilePathNormalizer implements FilePathNormalizerInterface
      *
      * @param string $wrapper Wrapper to be checked.
      * @param int    $options Options use in checks.
+     *
+     * @since 1.1.0-dev Absolute required to options conversion.
      */
     protected function wrapperChecks($wrapper, $options)
     {
