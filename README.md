@@ -176,8 +176,8 @@ like of `realpath()` but without some of its shortcomings.
 I also wanted something that works with both Windows and Unix paths but allows
 me act like I'm always working with Unix paths.
 
-The best way to show why I think `FilePathNormalizer` is better is with examples
-of how it handles some of the edge cases I give above.
+The best way to show why I think `FilePathNormalizer` is better would be with
+some examples of how it handles some of the edge cases from above.
 
 ```
 <?php
@@ -287,6 +287,16 @@ part as the wrapper with the rest just being part of the normal path.
 
 ## At The Root
 
+So with the root part of the path you have two camps. One is Windows and the
+other is Unix and everyone else. There is a small camp of original Mac folks
+that use names and ':'s but since OSX Apple has largely moved them to FS like
+all the rest I'll ignore them.
 
+This part of the path is actually fairly easy to handle as it can only be a
+single letter followed by `:/` on Windows or just FS for everyone else. All of
+the BSes have already been handled before this point.
 
 ## Summary
+
+So hopefully the above text and example have helped you better understand paths
+and how `FilePathNormalizer` can help you deal with them better.
