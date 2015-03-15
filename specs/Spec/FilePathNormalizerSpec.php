@@ -112,6 +112,21 @@ class FilePathNormalizerSpec extends ObjectBehavior
             $this->shouldThrow(new \DomainException(sprintf($mess, $wrapper)))->duringNormalizePath($path, $options);
         }
     }
+    public function itThrowsExceptionForInvalidWrapperIfWrapperRequiredWhenTryingToNormalizePath()
+    {
+        $mess = 'Invalid wrapper(s), was given %s';
+        $options = FilePathNormalizerInterface::ABSOLUTE_REQUIRED | FilePathNormalizerInterface::WRAPPER_REQUIRED;
+        $paths = [
+            '123://' => '123://c:/fake/path',
+            '_ab://' => '_ab:///fake/path',
+            '-ab://' => '-ab:///fake/',
+            '+ab://' => ' +ab:///fake/path/',
+            'ftp:///a/fake/path/ab://' => 'ftp:///a/fake/path/ab:///a/path/'
+        ];
+        foreach ($paths as $wrapper => $path) {
+            $this->shouldThrow(new \DomainException(sprintf($mess, $wrapper)))->duringNormalizePath($path, $options);
+        }
+    }
     public function itThrowsExceptionForMissingWrapperIfWrapperRequiredWhenTryingToNormalizePath()
     {
         $mess = 'Missing wrapper(s) when required set';
