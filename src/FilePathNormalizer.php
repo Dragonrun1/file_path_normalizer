@@ -45,23 +45,16 @@ class FilePathNormalizer implements FilePathNormalizerInterface
     public function normalizeFile($file, $options = self::MODE_DEFAULT)
     {
         if (!is_string($file)) {
-            $mess = 'String expected but was given ' . gettype($file);
+            $mess = sprintf('String expected but was given %s', gettype($file));
             throw new \InvalidArgumentException($mess);
         }
-        list($fileName, $path) = explode(
-            '/',
-            strrev(str_replace('\\', '/', $file)),
-            2
-        );
+        list($fileName, $path) = explode('/', strrev(str_replace('\\', '/', $file)), 2);
         if (!ctype_print($fileName)) {
             $mess = 'File name can NOT have non-printable characters or be empty';
             throw new \DomainException($mess);
         }
         $this->checkPathParameter($path);
-        return $this->normalizePath(
-            strrev($path),
-            $options
-        ) . strrev($fileName);
+        return $this->normalizePath(strrev($path), $options) . strrev($fileName);
     }
     /**
      * @inheritdoc
@@ -92,7 +85,7 @@ class FilePathNormalizer implements FilePathNormalizerInterface
         $regExp .= '(?<path>(?:[[:print:]]*))$%';
         $parts = [];
         if (!preg_match($regExp, $path, $parts)) {
-            $mess = 'Path is NOT valid, was given ' . $path;
+            $mess = sprintf('Path is NOT valid, was given %s', $path);
             throw new \DomainException($mess);
         }
         $wrappers = $parts['wrappers'];
@@ -102,10 +95,7 @@ class FilePathNormalizer implements FilePathNormalizerInterface
             $options &= ~self::ABSOLUTE_REQUIRED;
         }
         if (($options & self::ABSOLUTE_REQUIRED) && empty($parts['root'])) {
-            $mess = sprintf(
-                'Absolute path required but root part missing, was given %s',
-                $path
-            );
+            $mess = sprintf('Absolute path required but root part missing, was given %s', $path);
             throw new \DomainException($mess);
         }
         $root = $parts['root'];
@@ -124,7 +114,7 @@ class FilePathNormalizer implements FilePathNormalizerInterface
     protected function checkPathParameter($path)
     {
         if (!is_string($path)) {
-            $mess = 'String expected but was given ' . gettype($path);
+            $mess = sprintf('String expected but was given %s', gettype($path));
             throw new \InvalidArgumentException($mess);
         }
         if (!ctype_print($path)) {
@@ -153,7 +143,7 @@ class FilePathNormalizer implements FilePathNormalizerInterface
             }
             if ('..' === $part) {
                 if (count($parts) < 1) {
-                    $mess = 'Can NOT go above root path but was given ' . $path;
+                    $mess = sprintf('Can NOT go above root path but was given %s', $path);
                     throw new \DomainException($mess, 1);
                 }
                 array_pop($parts);
@@ -167,7 +157,7 @@ class FilePathNormalizer implements FilePathNormalizerInterface
      * Use to make check on the wrapper part of path.
      *
      * @param string $wrapper Wrapper to be checked.
-     * @param int $options Options use in checks.
+     * @param int    $options Options use in checks.
      */
     protected function wrapperChecks($wrapper, $options)
     {
