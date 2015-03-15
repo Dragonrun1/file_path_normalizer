@@ -46,40 +46,58 @@ interface FilePathNormalizerInterface
      */
     /**
      * Path can be absolute or relative.
+     *
+     * @since 1.1.0-dev Absolute required to options conversion.
      */
     const ABSOLUTE_ALLOWED = 1;
     /**
      * Allows only relative path.
+     *
+     * @since 1.1.0-dev Absolute required to options conversion.
      */
     const ABSOLUTE_DISABLED = 2;
     /**
      * Absolute path required.
+     *
+     * @since 1.1.0-dev Absolute required to options conversion.
      */
     const ABSOLUTE_REQUIRED = 4;
     /**
      * Sets mode that is backwards compatible with earlier versions of File Path Normalizer.
      *
      * Absolute path required, Virtual Filesystem Stream allowed, wrapper allowed.
+     *
+     * @since 1.1.0-dev Absolute required to options conversion.
      */
     const MODE_DEFAULT = 44;
     /**
      * Allows use of VFSStream wrapper.
+     *
+     * @since 1.1.0-dev Absolute required to options conversion.
      */
     const VFS_ALLOWED = 8;
     /**
      * Disables use of VFSStream.
+     *
+     * @since 1.1.0-dev Absolute required to options conversion.
      */
     const VFS_DISABLED = 16;
     /**
      * Allows path to have optional wrappers.
+     *
+     * @since 1.1.0-dev Absolute required to options conversion.
      */
     const WRAPPER_ALLOWED = 32;
     /**
      * Disables path from have any wrappers.
+     *
+     * @since 1.1.0-dev Absolute required to options conversion.
      */
     const WRAPPER_DISABLED = 64;
     /**
      * Makes use of one or more wrapper required.
+     *
+     * @since 1.1.0-dev Absolute required to options conversion.
      */
     const WRAPPER_REQUIRED = 128;
     /**
