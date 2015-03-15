@@ -36,7 +36,7 @@ namespace FilePathNormalizer;
 /**
  * Class FilePathNormalizer
  *
- * @since 0.1.0 The heart of the project.
+ * @since 0.1.0-dev The heart of the project.
  */
 class FilePathNormalizer implements FilePathNormalizerInterface
 {
@@ -46,7 +46,7 @@ class FilePathNormalizer implements FilePathNormalizerInterface
      * @uses FilePathNormalizer::normalizePath()
      * @throws \DomainException
      * @throws \InvalidArgumentException
-     * @since 0.1.0 The heart of the project.
+     * @since 0.1.0-dev The heart of the project.
      */
     public function normalizeFile($file, $options = self::MODE_DEFAULT)
     {
@@ -68,7 +68,7 @@ class FilePathNormalizer implements FilePathNormalizerInterface
      * @uses FilePathNormalizer::cleanPartsPath()
      * @throws \DomainException
      * @throws \InvalidArgumentException
-     * @since 0.1.0 The heart of the project.
+     * @since 0.1.0-dev The heart of the project.
      */
     public function normalizePath($path, $options = self::MODE_DEFAULT)
     {
@@ -138,7 +138,7 @@ class FilePathNormalizer implements FilePathNormalizerInterface
      *
      * @return string[]
      * @throws \DomainException
-     * @since 0.1.0 The heart of the project.
+     * @since 0.1.0-dev The heart of the project.
      */
     protected function cleanPartsPath($path)
     {

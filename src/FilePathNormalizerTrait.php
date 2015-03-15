@@ -36,7 +36,7 @@ namespace FilePathNormalizer;
 /**
  * Trait FilePathNormalizerTrait
  *
- * @since 0.2.0 Added to making using class easier.
+ * @since 0.2.0-dev Added to making using class easier.
  */
 trait FilePathNormalizerTrait
 {
@@ -46,7 +46,7 @@ trait FilePathNormalizerTrait
      * @param FilePathNormalizerInterface|null $value Instance to use.
      *
      * @return $this Fluent interface.
-     * @since 0.2.0 Added to making using class easier.
+     * @since 0.2.0-dev Added to making using class easier.
      * @api
      */
     public function setFpn(FilePathNormalizerInterface $value = null)
@@ -58,7 +58,7 @@ trait FilePathNormalizerTrait
      * Get the instance of FilePathNormalizerInterface.
      *
      * @return FilePathNormalizerInterface Return the instance.
-     * @since 0.2.0 Added to making using class easier.
+     * @since 0.2.0-dev Added to making using class easier.
      * @api
      */
     protected function getFpn()

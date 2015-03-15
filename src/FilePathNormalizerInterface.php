@@ -36,7 +36,7 @@ namespace FilePathNormalizer;
 /**
  * Interface FilePathNormalizerInterface
  *
- * @since 0.2.0 Added to making using class easier.
+ * @since 0.2.0-dev Added to making using class easier.
  */
 interface FilePathNormalizerInterface
 {
@@ -108,7 +108,7 @@ interface FilePathNormalizerInterface
      *                          validating path.
      *
      * @return string Returns the file with a normalized path.
-     * @since 0.2.0 Added to making using class easier.
+     * @since 0.2.0-dev Added to making using class easier.
      * @api
      */
     public function normalizeFile($file, $options = self::MODE_DEFAULT);
@@ -125,7 +125,7 @@ interface FilePathNormalizerInterface
      * @see  FilePathNormalizerInterface::normalizeFile() Use to normalize full
      *                                                    path with a file name.
      * @return string Returns the normalized path.
-     * @since 0.2.0 Added to making using class easier.
+     * @since 0.2.0-dev Added to making using class easier.
      * @api
      */
     public function normalizePath($path, $options = self::MODE_DEFAULT);
