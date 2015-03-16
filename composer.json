@@ -24,7 +24,7 @@
     },
     "minimum-stability": "stable",
     "require": {
-        "php": ">5.4.1, <7.0"
+        "php": ">5.4.1,<7.0"
     },
     "require-dev": {
         "dragonrun1/phpspec": "2.1.2",
@@ -33,5 +33,9 @@
         "phpunit/phpunit": "<4.6",
         "satooshi/php-coveralls": "dev-master",
         "symfony/console": "<2.7"
+    },
+    "replace":  {
+        "dragonrun1/file_path_normalizer": "dev-master",
+        "dragonrun1/file_path_normalizer": "1.0.*"
     }
 }
