@@ -5,7 +5,9 @@
          stopOnError="true"
          stopOnFailure="true">
     <filter>
-        <whitelist>./</whitelist>
+        <whitelist>
+            <directory>./</directory>
+        </whitelist>
         <blacklist>
             <directory>composer</directory>
             <directory>docs</directory>

@@ -24,15 +24,14 @@
     },
     "minimum-stability": "stable",
     "require": {
-        "php": ">5.4.1,<7.0"
+        "php": ">5.4.1,<7.1"
     },
     "require-dev": {
         "dragonrun1/phpspec": "2.1.2",
         "henrikbjorn/phpspec-code-coverage": "1.0.1",
         "phpspec/nyan-formatters": "1.0.1",
-        "phpunit/phpunit": "<4.6",
-        "satooshi/php-coveralls": "dev-master",
-        "symfony/console": "<2.7"
+        "phpunit/phpunit": "<5.2",
+        "satooshi/php-coveralls": "dev-master"
     },
     "replace":  {
         "dragonrun1/file_path_normalizer": "dev-master",
