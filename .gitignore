@@ -1,6 +1,7 @@
 .php_cs.cache
 .idea/
 *.log
+build/
 cache/
 composer.phar
 composer.lock
