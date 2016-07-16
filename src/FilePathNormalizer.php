@@ -7,7 +7,7 @@
  * LICENSE:
  * This file is part of file_path_normalizer which is used to normalize PHP file
  * paths without several of the shortcomings of the built-in functions.
- * Copyright (C) 2014-2015 Michael Cummings
+ * Copyright (C) 2014-2016 Michael Cummings
  *
  * This program is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -24,7 +24,7 @@
  *
  * You should be able to find a copy of this license in the LICENSE file.
  *
- * @copyright 2014-2015 Michael Cummings
+ * @copyright 2014-2016 Michael Cummings
  * @license   http://www.gnu.org/licenses/gpl-2.0.html GNU GPLv2
  * @author    Michael Cummings <mgcummings@yahoo.com>
  */
@@ -32,9 +32,6 @@
  * Main namespace.
  */
 namespace FilePathNormalizer;
-
-use DomainException;
-use InvalidArgumentException;
 
 /**
  * Class FilePathNormalizer
@@ -44,34 +41,49 @@ use InvalidArgumentException;
 class FilePathNormalizer implements FilePathNormalizerInterface
 {
     /**
-     * @inheritdoc
+     * Used to normalize a file with a path.
      *
-     * @uses FilePathNormalizer::normalizePath()
-     * @throws DomainException
-     * @throws InvalidArgumentException
-     * @since 0.1.0-dev The heart of the project.
+     * @param string   $file    File with a path.
+     * @param bool|int $options Determines the options FPN uses while
+     *                          validating path.
+     *
+     * @return string Returns the file with a normalized path.
+     * @throws \DomainException
+     * @throws \InvalidArgumentException
+     * @since 0.2.0-dev Added to making using class easier.
+     * @api
      */
     public function normalizeFile($file, $options = self::MODE_DEFAULT)
     {
         if (!is_string($file)) {
             $mess = sprintf('String expected but was given %s', gettype($file));
-            throw new InvalidArgumentException($mess);
+            throw new \InvalidArgumentException($mess);
         }
         list($fileName, $path) = explode('/', strrev(str_replace('\\', '/', $file)), 2);
         if (!ctype_print($fileName)) {
             $mess = 'File name can NOT have non-printable characters or be empty';
-            throw new DomainException($mess);
+            throw new \DomainException($mess);
         }
         $this->checkPathParameter($path);
         return $this->normalizePath(strrev($path), $options) . strrev($fileName);
     }
     /**
-     * @inheritdoc
+     * Used to normalize a file path without all the shortcomings of the
+     * built-in functions.
      *
-     * @uses FilePathNormalizer::cleanPartsPath()
-     * @throws DomainException
-     * @throws InvalidArgumentException
-     * @since 0.1.0-dev The heart of the project.
+     * This should NOT be used with a string that includes the file name.
+     *
+     * @param string   $path    Path to be normalized.
+     * @param bool|int $options Determines the options FPN uses while
+     *                          validating path.
+     *
+     * @see   FilePathNormalizerInterface::normalizeFile() Use to normalize full
+     *                                                    path with a file name.
+     * @return string Returns the normalized path.
+     * @throws \DomainException
+     * @throws \InvalidArgumentException
+     * @since 0.2.0-dev Added to making using class easier.
+     * @api
      */
     public function normalizePath($path, $options = self::MODE_DEFAULT)
     {
@@ -84,7 +96,7 @@ class FilePathNormalizer implements FilePathNormalizerInterface
                 | self::WRAPPER_ALLOWED;
         } elseif (!is_int($options)) {
             $mess = sprintf('Options MUST be boolean or integer, but was given %s', gettype($options));
-            throw new DomainException($mess);
+            throw new \DomainException($mess);
         }
         $path = str_replace('\\', '/', $path);
         // Optional wrapper(s).
@@ -96,7 +108,7 @@ class FilePathNormalizer implements FilePathNormalizerInterface
         $parts = [];
         if (!preg_match($regExp, $path, $parts)) {
             $mess = sprintf('Path is NOT valid, was given %s', $path);
-            throw new DomainException($mess);
+            throw new \DomainException($mess);
         }
         $wrappers = $parts['wrappers'];
         $this->wrapperChecks($wrappers, $options);
@@ -106,7 +118,7 @@ class FilePathNormalizer implements FilePathNormalizerInterface
         }
         if (($options & self::ABSOLUTE_REQUIRED) && empty($parts['root'])) {
             $mess = sprintf('Absolute path required but root part missing, was given %s', $path);
-            throw new DomainException($mess);
+            throw new \DomainException($mess);
         }
         $root = $parts['root'];
         $parts = $this->cleanPartsPath($parts['path']);
@@ -121,8 +133,8 @@ class FilePathNormalizer implements FilePathNormalizerInterface
      *
      * @param string $path Path to be checked.
      *
-     * @throws DomainException
-     * @throws InvalidArgumentException
+     * @throws \DomainException
+     * @throws \InvalidArgumentException
      *
      * @since 1.1.0-dev Absolute required to options conversion.
      */
@@ -130,11 +142,11 @@ class FilePathNormalizer implements FilePathNormalizerInterface
     {
         if (!is_string($path)) {
             $mess = sprintf('String expected but was given %s', gettype($path));
-            throw new InvalidArgumentException($mess);
+            throw new \InvalidArgumentException($mess);
         }
         if (!ctype_print($path)) {
             $mess = 'Path can NOT have non-printable characters or be empty';
-            throw new DomainException($mess);
+            throw new \DomainException($mess);
         }
     }
     /**
@@ -143,7 +155,7 @@ class FilePathNormalizer implements FilePathNormalizerInterface
      * @param string $path
      *
      * @return string[]
-     * @throws DomainException
+     * @throws \DomainException
      * @since 0.1.0-dev The heart of the project.
      */
     protected function cleanPartsPath($path)
@@ -162,7 +174,7 @@ class FilePathNormalizer implements FilePathNormalizerInterface
             if ('..' === $part) {
                 if (count($parts) < 1) {
                     $mess = sprintf('Can NOT go above root path but was given %s', $path);
-                    throw new DomainException($mess, 1);
+                    throw new \DomainException($mess, 1);
                 }
                 array_pop($parts);
                 continue;
@@ -177,18 +189,18 @@ class FilePathNormalizer implements FilePathNormalizerInterface
      * @param string $wrapper Wrapper to be checked.
      * @param int    $options Options use in checks.
      *
-     * @throws DomainException
+     * @throws \DomainException
      * @since 1.1.0-dev Absolute required to options conversion.
      */
     protected function wrapperChecks($wrapper, $options)
     {
         if ('' === $wrapper && ($options & self::WRAPPER_REQUIRED)) {
             $mess = 'Missing wrapper(s) when required set';
-            throw new DomainException($mess);
+            throw new \DomainException($mess);
         }
         if ('' !== $wrapper && ($options & self::WRAPPER_DISABLED)) {
             $mess = 'Given wrapper(s) when wrapper disabled';
-            throw new DomainException($mess);
+            throw new \DomainException($mess);
         }
         $wrappers = explode('://', $wrapper);
         array_pop($wrappers);
@@ -198,7 +210,7 @@ class FilePathNormalizer implements FilePathNormalizerInterface
         };
         if (false === array_reduce($wrappers, $func, true)) {
             $mess = sprintf('Invalid wrapper(s), was given %s', $wrapper);
-            throw new DomainException($mess);
+            throw new \DomainException($mess);
         }
     }
 }
