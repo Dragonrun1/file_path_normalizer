@@ -1,30 +1,42 @@
 {
     "name": "dragonrun1/file_path_normalizer",
     "description": "File_path_normalizer is a class used to normalize PHP file paths without several of the shortcomings of the built-in functions.",
-    "license": "GPL-2.0",
-    "autoload": {
-        "psr-4": {
-            "FilePathNormalizer\\": ["src/"]
-        }
-    },
-    "autoload-dev": {
-        "psr-0": {"Spec\\": "specs/"},
-        "psr-4": {
-            "FilePathNormalizer\\Test\\": ["tests/"]
-        }
-    },
     "authors": [
         {
             "name": "Michael Cummings",
-            "email": "mgcummings@yahoo.com"
+            "email": "mgcummings@yahoo.com",
+            "role": "Developer"
         }
     ],
+    "autoload": {
+        "psr-4": {
+            "FilePathNormalizer\\": [
+                "src/"
+            ]
+        }
+    },
+    "autoload-dev": {
+        "psr-0": {
+            "Spec\\": "specs/"
+        },
+        "psr-4": {
+            "FilePathNormalizer\\Test\\": [
+                "tests/"
+            ]
+        }
+    },
     "config": {
         "optimize-autoloader": true
     },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.*"
+        }
+    },
+    "license": "GPL-2.0",
     "minimum-stability": "stable",
     "require": {
-        "php": ">5.4.1,<7.1"
+        "php": ">5.4.1,<7.2"
     },
     "require-dev": {
         "dragonrun1/phpspec": "2.1.2",
@@ -33,8 +45,7 @@
         "phpunit/phpunit": "<5.2",
         "satooshi/php-coveralls": "dev-master"
     },
-    "replace":  {
-        "dragonrun1/file_path_normalizer": "dev-master",
+    "replace": {
         "dragonrun1/file_path_normalizer": "1.0.*"
     }
 }
