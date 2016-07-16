@@ -1,5 +1,4 @@
-src_dir: src
-
-coverage_clover: build/logs/clover.xml
-
-json_path: build/logs/coveralls-upload.json
+coverage_clover:
+    - build/clover-phpunit.xml
+    - build/clover-phpspec.xml
+json_path: build/coveralls-upload.json
