@@ -9,15 +9,19 @@ extensions:
     - PhpSpec\Extension\CodeCoverageExtension
 formatter.name: dot
 code_coverage:
-    format:
-        - html
-        - clover
     blacklist:
+        - build
         - composer
         - docs
         - specs
         - tests
         - vendor
+    blacklist_files:
+        - bootstrap.php
+        - "Mock*.php"
+        - "*Spec.php"
+        - "*Test.php"
+    format:
+        - clover
     output:
-        html: build/phpspec
         clover: build/clover-phpspec.xml
