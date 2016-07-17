@@ -30,13 +30,13 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "1.*-dev"
+            "dev-master": "2.*-dev"
         }
     },
     "license": "GPL-2.0",
     "minimum-stability": "stable",
     "require": {
-        "php": ">5.4.1,<7.2"
+        "php": ">7.0,<7.2"
     },
     "require-dev": {
         "dragonrun1/phpspec": "2.1.2",
@@ -46,6 +46,6 @@
         "satooshi/php-coveralls": "dev-master"
     },
     "replace": {
-        "dragonrun1/file_path_normalizer": "1.0.*"
+        "dragonrun1/file_path_normalizer": "2.0.*"
     }
 }
