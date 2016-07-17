@@ -1,3 +1,4 @@
+.coveralls_local.yml
 .php_cs.cache
 .idea/
 *.log
