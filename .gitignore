@@ -9,6 +9,6 @@ composer.lock
 docs/
 junk*.php
 phpspec.yml
-test.php
+test*.php
 vendor/
 xdebug/
