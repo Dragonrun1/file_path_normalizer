@@ -35,6 +35,7 @@
     },
     "require-dev": {
         "henrikbjorn/phpspec-code-coverage": "dev-master",
+        "phpspec/nyan-formatters": "2.*",
         "phpspec/phpspec": "~3.0",
         "phpunit/php-code-coverage": "~4.0",
         "satooshi/php-coveralls": "dev-master"
