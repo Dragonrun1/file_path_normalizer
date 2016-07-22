@@ -33,6 +33,8 @@ namespace FilePathNormalizer;
 
 /**
  * Class PathInfo.
+ *
+ * @since 2.0.0-dev New path info awareness.
  */
 class PathInfo implements PathInfoInterface
 {

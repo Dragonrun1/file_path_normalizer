@@ -38,6 +38,8 @@ use PhpSpec\ObjectBehavior;
 
 /**
  * Class PathInfoSpec
+ *
+ * @since 2.0.0-dev New path info awareness.
  */
 class PathInfoSpec extends ObjectBehavior
 {
