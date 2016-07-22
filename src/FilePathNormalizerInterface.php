@@ -1,8 +1,9 @@
 <?php
+declare(strict_types = 1);
 /**
  * Contains FilePathNormalizerInterface Interface.
  *
- * PHP version 5.4
+ * PHP version 7.0
  *
  * LICENSE:
  * This file is part of file_path_normalizer which is used to normalize PHP file
@@ -24,9 +25,9 @@
  *
  * You should be able to find a copy of this license in the LICENSE file.
  *
- * @copyright 2014-2016 Michael Cummings
- * @license   http://www.gnu.org/licenses/gpl-2.0.html GNU GPLv2
  * @author    Michael Cummings <mgcummings@yahoo.com>
+ * @copyright 2014-2016 Michael Cummings
+ * @license   GPL-2.0
  */
 /**
  * Main namespace.
@@ -68,8 +69,9 @@ interface FilePathNormalizerInterface
      * Absolute path required, Virtual Filesystem Stream allowed, wrapper allowed.
      *
      * @since 1.1.0-dev Absolute required to options conversion.
+     * @since 2.0.0-dev Absolute required and Virtual Filesystem Stream allowed no longer compatible together. VFS_DISABLED now used.
      */
-    const MODE_DEFAULT = 44;
+    const MODE_DEFAULT = self::ABSOLUTE_REQUIRED | self::VFS_DISABLED | self::WRAPPER_ALLOWED;
     /**
      * Allows use of VFSStream wrapper.
      *
@@ -83,50 +85,56 @@ interface FilePathNormalizerInterface
      */
     const VFS_DISABLED = 16;
     /**
+     * Require VFSStream in wrappers.
+     *
+     * @since 2.0.0-dev Added as might be useful for testing.
+     */
+    const VFS_REQUIRED = 32;
+    /**
      * Allows path to have optional wrappers.
      *
      * @since 1.1.0-dev Absolute required to options conversion.
      */
-    const WRAPPER_ALLOWED = 32;
+    const WRAPPER_ALLOWED = 64;
     /**
      * Disables path from have any wrappers.
      *
      * @since 1.1.0-dev Absolute required to options conversion.
      */
-    const WRAPPER_DISABLED = 64;
+    const WRAPPER_DISABLED = 128;
     /**
      * Makes use of one or more wrapper required.
      *
      * @since 1.1.0-dev Absolute required to options conversion.
      */
-    const WRAPPER_REQUIRED = 128;
+    const WRAPPER_REQUIRED = 256;
     /**
      * Used to normalize a file with a path.
      *
-     * @param string   $file    File with a path.
-     * @param bool|int $options Determines the options FPN uses while
+     * @param string $file      File with a path.
+     * @param int    $options   Determines the options FPN uses while
      *                          validating path.
      *
      * @return string Returns the file with a normalized path.
      * @since 0.2.0-dev Added to making using class easier.
      * @api
      */
-    public function normalizeFile($file, $options = self::MODE_DEFAULT);
+    public function normalizeFile(string $file, int $options = self::MODE_DEFAULT): string;
     /**
      * Used to normalize a file path without all the shortcomings of the
      * built-in functions.
      *
      * This should NOT be used with a string that includes the file name.
      *
-     * @param string   $path    Path to be normalized.
-     * @param bool|int $options Determines the options FPN uses while
+     * @param string $path      Path to be normalized.
+     * @param int    $options   Determines the options FPN uses while
      *                          validating path.
      *
-     * @see  FilePathNormalizerInterface::normalizeFile() Use to normalize full
+     * @see   FilePathNormalizerInterface::normalizeFile() Use to normalize full
      *                                                    path with a file name.
      * @return string Returns the normalized path.
      * @since 0.2.0-dev Added to making using class easier.
      * @api
      */
-    public function normalizePath($path, $options = self::MODE_DEFAULT);
+    public function normalizePath(string $path, int $options = self::MODE_DEFAULT): string;
 }

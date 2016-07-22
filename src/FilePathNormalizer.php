@@ -1,8 +1,9 @@
 <?php
+declare(strict_types = 1);
 /**
  * Contains FilePathNormalizer class.
  *
- * PHP version 5.4
+ * PHP version 7.0
  *
  * LICENSE:
  * This file is part of file_path_normalizer which is used to normalize PHP file
@@ -24,9 +25,9 @@
  *
  * You should be able to find a copy of this license in the LICENSE file.
  *
- * @copyright 2014-2016 Michael Cummings
- * @license   http://www.gnu.org/licenses/gpl-2.0.html GNU GPLv2
  * @author    Michael Cummings <mgcummings@yahoo.com>
+ * @copyright 2014-2016 Michael Cummings
+ * @license   GPL-2.0
  */
 /**
  * Main namespace.
@@ -38,142 +39,127 @@ namespace FilePathNormalizer;
  *
  * @since 0.1.0-dev The heart of the project.
  */
-class FilePathNormalizer implements FilePathNormalizerInterface
+class FilePathNormalizer implements FilePathNormalizerInterface, PathInfoAwareInterface
 {
+    use PathInfoTrait;
+    /**
+     * FilePathNormalizer constructor.
+     *
+     * @param PathInfoInterface|null $pathInfo
+     */
+    public function __construct(PathInfoInterface $pathInfo = null)
+    {
+        $this->pathInfo = $pathInfo;
+    }
     /**
      * Used to normalize a file with a path.
      *
-     * @param string   $file    File with a path.
-     * @param bool|int $options Determines the options FPN uses while
+     * Note MUST include an actual file name and NOT just a path. Use
+     * normalizePath() for checking paths without file names.
+     *
+     * @param string $file      File with a path.
+     * @param int    $options   Determines the options FPN uses while
      *                          validating path.
      *
-     * @return string Returns the file with a normalized path.
+     * @return string Returns the file name with a normalized path.
      * @throws \DomainException
-     * @throws \InvalidArgumentException
+     * @throws \LogicException
      * @since 0.2.0-dev Added to making using class easier.
+     * @uses  FilePathNormalizer::normalizePath() to normalize path part.
      * @api
      */
-    public function normalizeFile($file, $options = self::MODE_DEFAULT)
+    public function normalizeFile(string $file, int $options = self::MODE_DEFAULT): string
     {
-        if (!is_string($file)) {
-            $mess = sprintf('String expected but was given %s', gettype($file));
-            throw new \InvalidArgumentException($mess);
-        }
         list($fileName, $path) = explode('/', strrev(str_replace('\\', '/', $file)), 2);
-        if (!ctype_print($fileName)) {
-            $mess = 'File name can NOT have non-printable characters or be empty';
+        $path = strrev($path);
+        $fileName = trim(strrev($fileName));
+        if ('' === $fileName) {
+            $mess = 'An empty file name is NOT allowed';
             throw new \DomainException($mess);
         }
-        $this->checkPathParameter($path);
-        return $this->normalizePath(strrev($path), $options) . strrev($fileName);
+        if (!ctype_print($fileName)) {
+            $mess = 'Using any non-printable characters in the file name is NOT allowed';
+            throw new \DomainException($mess);
+        }
+        return $this->normalizePath($path, $options) . $fileName;
     }
     /**
      * Used to normalize a file path without all the shortcomings of the
      * built-in functions.
      *
-     * This should NOT be used with a string that includes the file name.
+     * This should NOT be used with a string that includes a file name, instead
+     * use NormalizeFile() when wanting to check both.
      *
-     * @param string   $path    Path to be normalized.
-     * @param bool|int $options Determines the options FPN uses while
+     * Note that path length is not checked since the OS, character set used,
+     * and/or filesystem being used can change what is allowed.
+     *
+     * @param string $path      Path to be normalized.
+     * @param int    $options   Determines the options FPN uses while
      *                          validating path.
      *
      * @see   FilePathNormalizerInterface::normalizeFile() Use to normalize full
      *                                                    path with a file name.
      * @return string Returns the normalized path.
      * @throws \DomainException
-     * @throws \InvalidArgumentException
+     * @throws \LogicException
      * @since 0.2.0-dev Added to making using class easier.
      * @api
      */
-    public function normalizePath($path, $options = self::MODE_DEFAULT)
+    public function normalizePath(string $path, int $options = self::MODE_DEFAULT): string
     {
-        $this->checkPathParameter($path);
-        $path = trim($path);
-        if (is_bool($options)) {
-            $options = $options ? self::MODE_DEFAULT :
-                self::ABSOLUTE_ALLOWED
-                | self::VFS_ALLOWED
-                | self::WRAPPER_ALLOWED;
-        } elseif (!is_int($options)) {
-            $mess = sprintf('Options MUST be boolean or integer, but was given %s', gettype($options));
-            throw new \DomainException($mess);
-        }
-        $path = str_replace('\\', '/', $path);
-        // Optional wrapper(s).
-        $regExp = '%^(?<wrappers>(?:[[:print:]]{2,}://)*)';
-        // Optional root prefix.
-        $regExp .= '(?<root>(?:[[:alpha:]]:/|/)?)';
-        // Actual path.
-        $regExp .= '(?<path>(?:[[:print:]]*))$%';
-        $parts = [];
-        if (!preg_match($regExp, $path, $parts)) {
-            $mess = sprintf('Path is NOT valid, was given %s', $path);
-            throw new \DomainException($mess);
-        }
-        $wrappers = $parts['wrappers'];
-        $this->wrapperChecks($wrappers, $options);
-        // vfsStream does NOT allow absolute path.
-        if ('vfs://' === substr($wrappers, -6)) {
-            $options &= ~self::ABSOLUTE_REQUIRED;
-        }
-        if (($options & self::ABSOLUTE_REQUIRED) && empty($parts['root'])) {
-            $mess = sprintf('Absolute path required but root part missing, was given %s', $path);
-            throw new \DomainException($mess);
-        }
-        $root = $parts['root'];
-        $parts = $this->cleanPartsPath($parts['path']);
-        $path = $wrappers . $root . implode('/', $parts);
-        if ('/' !== substr($path, -1)) {
+        $this->optionsChecks($options);
+        $pathInfo = $this->getPathInfo();
+        $pathInfo->initAll($path);
+        $this->wrapperChecks($pathInfo->getWrappers(), $options);
+        $this->absoluteChecks($pathInfo->getRoot(), $options);
+        $path = $pathInfo->getWrappers() . $pathInfo->getRoot()
+            . implode('/', $this->cleanPartsPath());
+        if (false === strrpos($path, '/', -1)) {
             $path .= '/';
         }
         return $path;
     }
     /**
-     * Checks if given path is valid.
-     *
-     * @param string $path Path to be checked.
+     * @param string $root
+     * @param int    $options
      *
      * @throws \DomainException
-     * @throws \InvalidArgumentException
-     *
-     * @since 1.1.0-dev Absolute required to options conversion.
      */
-    protected function checkPathParameter($path)
+    protected function absoluteChecks(string $root, int $options)
     {
-        if (!is_string($path)) {
-            $mess = sprintf('String expected but was given %s', gettype($path));
-            throw new \InvalidArgumentException($mess);
+        if (($options & self::ABSOLUTE_DISABLED) && '' !== $root) {
+            $mess = 'Given absolute path when absolute was disabled';
+            throw new \DomainException($mess);
         }
-        if (!ctype_print($path)) {
-            $mess = 'Path can NOT have non-printable characters or be empty';
+        if (($options & self::ABSOLUTE_REQUIRED) && '' === $root) {
+            $mess = 'Absolute path required but root part missing';
             throw new \DomainException($mess);
         }
     }
     /**
      * Cleans up the actual path part of the given string.
      *
-     * @param string $path
-     *
      * @return string[]
      * @throws \DomainException
      * @since 0.1.0-dev The heart of the project.
      */
-    protected function cleanPartsPath($path)
+    protected function cleanPartsPath(): array
     {
-        // Drop all leading and trailing "/"s.
-        $path = trim($path, '/');
-        // Drop pointless consecutive "/"s.
-        while (false !== strpos($path, '//')) {
-            $path = str_replace('//', '/', $path);
-        }
         $parts = [];
-        foreach (explode('/', $path) as $part) {
+        foreach ($this->pathInfo->getDirList() as $part) {
             if ('.' === $part || '' === $part) {
                 continue;
             }
             if ('..' === $part) {
+                /*
+                 * Though path may still be valid in the file system in the
+                 * case of relative paths here there is no way to validate
+                 * them without accessing the file system to do so. These are
+                 * unusual paths probably cause by errors or to access
+                 * something unexpected anyway.
+                 */
                 if (count($parts) < 1) {
-                    $mess = sprintf('Can NOT go above root path but was given %s', $path);
+                    $mess = 'Unusual above root path found';
                     throw new \DomainException($mess, 1);
                 }
                 array_pop($parts);
@@ -184,6 +170,37 @@ class FilePathNormalizer implements FilePathNormalizerInterface
         return $parts;
     }
     /**
+     * @param int $options
+     *
+     * @throws \DomainException
+     */
+    protected function optionsChecks(int $options)
+    {
+        // Forbidden combos.
+        $combos = [
+            self::ABSOLUTE_DISABLED | self::ABSOLUTE_ALLOWED,
+            self::ABSOLUTE_DISABLED | self::ABSOLUTE_REQUIRED,
+            self::VFS_ALLOWED | self::ABSOLUTE_ALLOWED,
+            self::VFS_ALLOWED | self::ABSOLUTE_REQUIRED,
+            self::VFS_DISABLED | self::VFS_ALLOWED,
+            self::VFS_DISABLED | self::VFS_REQUIRED,
+            self::VFS_REQUIRED | self::ABSOLUTE_ALLOWED,
+            self::VFS_REQUIRED | self::ABSOLUTE_REQUIRED,
+            self::WRAPPER_DISABLED | self::VFS_ALLOWED,
+            self::WRAPPER_DISABLED | self::VFS_REQUIRED,
+            self::WRAPPER_DISABLED | self::WRAPPER_ALLOWED,
+            self::WRAPPER_DISABLED | self::WRAPPER_REQUIRED
+        ];
+        /** @noinspection ForeachSourceInspection */
+        foreach ($combos as $combo) {
+            if (($options & $combo) === $combo) {
+                $mess = 'Can not use required or allowed options together with corresponding disabled option';
+                throw new \DomainException($mess);
+            }
+        }
+        // Pointless combos.
+    }
+    /**
      * Use to make check on the wrapper part of path.
      *
      * @param string $wrapper Wrapper to be checked.
@@ -192,24 +209,48 @@ class FilePathNormalizer implements FilePathNormalizerInterface
      * @throws \DomainException
      * @since 1.1.0-dev Absolute required to options conversion.
      */
-    protected function wrapperChecks($wrapper, $options)
+    protected function wrapperChecks(string $wrapper, int &$options)
     {
-        if ('' === $wrapper && ($options & self::WRAPPER_REQUIRED)) {
-            $mess = 'Missing wrapper(s) when required set';
+        if (($options & self::WRAPPER_DISABLED) && '' !== $wrapper) {
+            $mess = 'Given wrapper when wrapper(s) are disabled';
             throw new \DomainException($mess);
         }
-        if ('' !== $wrapper && ($options & self::WRAPPER_DISABLED)) {
-            $mess = 'Given wrapper(s) when wrapper disabled';
+        if (($options & self::WRAPPER_REQUIRED) && '' === $wrapper) {
+            $mess = 'Missing wrapper when wrapper(s) are required';
+            throw new \DomainException($mess);
+        }
+        $hasVfs = false !== strpos($wrapper, 'vfs://');
+        if (($options & self::VFS_DISABLED) && $hasVfs) {
+            $mess = 'Found vfsStream wrapper when it was disabled';
+            throw new \DomainException($mess);
+        }
+        if (($options & self::VFS_REQUIRED) && !$hasVfs) {
+            $mess = 'Missing vfsStream wrapper when it was required';
             throw new \DomainException($mess);
         }
         $wrappers = explode('://', $wrapper);
+        // Discard empty artifact.
         array_pop($wrappers);
+        /** @noinspection LowPerformanceArrayUniqueUsageInspection */
+        /*
+         * Though technically allowed duplicate wrappers are most likely to be
+         * user errors, programming bugs, or at least a bad programming smell.
+         */
+        if (count($wrappers) !== count(array_unique($wrappers))) {
+            $mess = 'Duplicate wrappers are not allowed';
+            throw new \DomainException($mess);
+        }
         $regExp = '%^[[:alpha:]][[:alnum:]]+$%';
-        $func = function ($carry, $item) use ($regExp) {
-            return $carry && preg_match($regExp, $item);
-        };
-        if (false === array_reduce($wrappers, $func, true)) {
-            $mess = sprintf('Invalid wrapper(s), was given %s', $wrapper);
+        if (false === array_reduce($wrappers, function ($carry, $item) use ($regExp) {
+                return $carry && preg_match($regExp, $item);
+            }, true)
+        ) {
+            $mess = 'Invalidly formatted wrapper name found';
+            throw new \DomainException($mess);
+        }
+        $last = array_pop($wrappers);
+        if ($hasVfs && 'vfs' !== $last) {
+            $mess = 'Must use vfsStream as last wrapper';
             throw new \DomainException($mess);
         }
     }
