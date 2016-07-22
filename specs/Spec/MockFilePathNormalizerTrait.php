@@ -41,4 +41,11 @@ use FilePathNormalizer\FilePathNormalizerTrait;
 class MockFilePathNormalizerTrait implements FilePathNormalizerAwareInterface
 {
     use FilePathNormalizerTrait;
+    /**
+     * MockFilePathNormalizerTrait constructor.
+     */
+    public function __construct()
+    {
+        // Place holder.
+    }
 }

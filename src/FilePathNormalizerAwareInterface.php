@@ -36,6 +36,8 @@ namespace FilePathNormalizer;
 
 /**
  * Interface FilePathNormalizerAwareInterface.
+ *
+ * @since 2.0.0-dev FPN Awareness.
  */
 interface FilePathNormalizerAwareInterface
 {
@@ -54,9 +56,9 @@ interface FilePathNormalizerAwareInterface
      *
      * @param FilePathNormalizerInterface $value Instance to use.
      *
-     * @return self
+     * @return FilePathNormalizerAwareInterface Fluent interface.
      * @since 2.0.0-dev Added for completeness.
      * @api
      */
-    public function setFpn(FilePathNormalizerInterface $value): self;
+    public function setFpn(FilePathNormalizerInterface $value = null): FilePathNormalizerAwareInterface;
 }

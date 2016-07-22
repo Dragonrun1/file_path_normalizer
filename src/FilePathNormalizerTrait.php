@@ -62,17 +62,17 @@ trait FilePathNormalizerTrait
      *
      * @param FilePathNormalizerInterface $value Instance to use.
      *
-     * @return self
+     * @return FilePathNormalizerAwareInterface|FilePathNormalizerTrait Fluent interface.
      * @since 0.2.0-dev Added to making using class easier.
      * @api
      */
-    public function setFpn(FilePathNormalizerInterface $value): self
+    public function setFpn(FilePathNormalizerInterface $value = null): FilePathNormalizerAwareInterface
     {
         $this->fpn = $value;
         return $this;
     }
     /**
-     * @type FilePathNormalizerInterface $fpn Holds the instance of FilePathNormalizerInterface.
+     * @var FilePathNormalizerInterface $fpn Holds the instance of FilePathNormalizerInterface.
      */
     private $fpn;
 }
