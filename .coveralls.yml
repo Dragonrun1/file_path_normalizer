@@ -1,4 +1,4 @@
 coverage_clover:
-    - build/clover-phpunit.xml
+#    - build/clover-phpunit.xml
     - build/clover-phpspec.xml
 json_path: build/coveralls-upload.json

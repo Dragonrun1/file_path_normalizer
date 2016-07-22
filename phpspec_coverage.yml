@@ -23,5 +23,7 @@ code_coverage:
         - "*Test.php"
     format:
         - clover
+#        - html
     output:
         clover: build/clover-phpspec.xml
+#        html: build/clover
