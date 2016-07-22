@@ -34,6 +34,7 @@ declare(strict_types = 1);
  */
 namespace Spec\FilePathNormalizer;
 
+use FilePathNormalizer\PathInfoInterface;
 use PhpSpec\ObjectBehavior;
 
 /**
@@ -53,10 +54,13 @@ use PhpSpec\ObjectBehavior;
 class PathInfoTraitSpec extends ObjectBehavior
 {
     /**
-     * @param \FilePathNormalizer\PathInfo $pathInfo Instance of pathInfo.
+     * @param $pathInfo
      */
     public function it_provides_fluent_interface_from_set_pathInfo($pathInfo)
     {
+        /**
+         * @var PathInfoInterface $pathInfo
+         */
         $this->setPathInfo($pathInfo)
              ->shouldReturn($this);
     }
@@ -68,15 +72,21 @@ class PathInfoTraitSpec extends ObjectBehavior
              ->shouldReturn($result);
     }
     /**
-     * @param \FilePathNormalizer\PathInfo $pathInfo Instance of pathInfo.
+     * @param $pathInfo
      */
     public function it_should_return_same_instance_that_it_is_given($pathInfo)
     {
+        /**
+         * @var PathInfoInterface $pathInfo
+         */
         $this->setPathInfo($pathInfo)
              ->getPathInfo()
              ->shouldReturn($pathInfo);
     }
-    public function let()
+    /**
+     * @param PathInfoInterface $pathInfo
+     */
+    public function let(PathInfoInterface $pathInfo)
     {
         $this->beAnInstanceOf('\\Spec\\FilePathNormalizer\\MockPathInfoTrait');
     }

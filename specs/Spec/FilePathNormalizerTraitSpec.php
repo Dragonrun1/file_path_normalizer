@@ -34,6 +34,7 @@ declare(strict_types = 1);
  */
 namespace Spec\FilePathNormalizer;
 
+use FilePathNormalizer\FilePathNormalizerInterface;
 use PhpSpec\ObjectBehavior;
 
 /**
@@ -51,10 +52,13 @@ use PhpSpec\ObjectBehavior;
 class FilePathNormalizerTraitSpec extends ObjectBehavior
 {
     /**
-     * @param \FilePathNormalizer\FilePathNormalizer $fpn Instance of fpn.
+     * @param $fpn
      */
     public function it_provides_fluent_interface_from_set_fpn($fpn)
     {
+        /**
+         * @var FilePathNormalizerInterface $fpn
+         */
         $this->setFpn($fpn)
              ->shouldReturn($this);
     }
@@ -74,8 +78,12 @@ class FilePathNormalizerTraitSpec extends ObjectBehavior
              ->getFpn()
              ->shouldReturn($fpn);
     }
-    public function let()
+    /**
+     * @param FilePathNormalizerInterface $fpn
+     */
+    public function let(FilePathNormalizerInterface $fpn)
     {
         $this->beAnInstanceOf('\\Spec\\FilePathNormalizer\\MockFilePathNormalizerTrait');
+//        $this->willImplement('\\FilePathNormalizer\\FilePathNormalizerAwareInterface');
     }
 }
