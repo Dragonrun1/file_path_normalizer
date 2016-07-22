@@ -39,10 +39,10 @@
         "php": ">7.0,<7.2"
     },
     "require-dev": {
-        "dragonrun1/phpspec": "2.1.2",
-        "henrikbjorn/phpspec-code-coverage": "1.0.1",
-        "phpspec/nyan-formatters": "1.0.1",
-        "phpunit/phpunit": "<5.2",
+        "henrikbjorn/phpspec-code-coverage": "~2.1",
+        "phpspec/nyan-formatters": "~1.0.0",
+        "phpspec/phpspec": "~2.5",
+        "phpunit/php-code-coverage": "~3.0",
         "satooshi/php-coveralls": "dev-master"
     },
     "replace": {
