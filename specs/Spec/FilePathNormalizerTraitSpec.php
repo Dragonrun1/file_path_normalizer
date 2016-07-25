@@ -84,6 +84,5 @@ class FilePathNormalizerTraitSpec extends ObjectBehavior
     public function let(/**FilePathNormalizerInterface $fpn*/)
     {
         $this->beAnInstanceOf('\\Spec\\FilePathNormalizer\\MockFilePathNormalizerTrait');
-//        $this->willImplement('\\FilePathNormalizer\\FilePathNormalizerAwareInterface');
     }
 }
