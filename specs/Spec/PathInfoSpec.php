@@ -39,6 +39,15 @@ use PhpSpec\ObjectBehavior;
 /**
  * Class PathInfoSpec
  *
+ * @mixin \FilePathNormalizer\PathInfo
+ *
+ * @method void during(string $method, array $params)
+ * @method void shouldBe($value)
+ * @method void shouldContain($value)
+ * @method void shouldHaveKey($key)
+ * @method void shouldNotEqual($value)
+ * @method void shouldReturn($result)
+ *
  * @since 2.0.0-dev New path info awareness.
  */
 class PathInfoSpec extends ObjectBehavior
@@ -47,7 +56,106 @@ class PathInfoSpec extends ObjectBehavior
     {
         $this->shouldHaveType('FilePathNormalizer\PathInfo');
     }
-    public function it_throws_exception_for_empty_path_from_initAll()
+    public function it_should_have_basic_getters_that_return_raw_parts()
+    {
+        $this->initAll('ftp:///dummy');
+        $this->getWrappers()
+             ->shouldReturn('ftp://');
+        $this->getRoot()
+             ->shouldReturn('/');
+        $this->getDirs()
+             ->shouldReturn('dummy');
+    }
+    public function it_should_return_correct_wrappers_from_get_wrappers_list()
+    {
+        $paths = [
+            '/' => [],
+            'c:/' => [],
+            'dummy' => [],
+            'ftp:///dummy/path' => ['ftp'],
+            'ftp://vfs://c:\\dummy\\path\\' => ['ftp', 'vfs'],
+            'ftp://vfs://dummy//path' => ['ftp', 'vfs']
+        ];
+        foreach ($paths as $path => $expected) {
+            $this->initAll($path)
+                 ->getWrapperList()
+                 ->shouldReturn($expected);
+        }
+    }
+    public function it_should_return_correctly_cleaned_dir_parts_from_get_dir_list()
+    {
+        $paths = [
+            '/' => [],
+            'c:/' => [],
+            'dummy' => ['dummy'],
+            '/dummy/path' => ['dummy', 'path'],
+            'ftp://c:\\dummy\\path\\' => ['dummy', 'path'],
+            'dummy//path' => ['dummy', 'path']
+        ];
+        foreach ($paths as $path => $expected) {
+            $this->initAll($path)
+                 ->getDirList()
+                 ->shouldReturn($expected);
+        }
+    }
+    public function it_should_return_original_given_path_from_get_path()
+    {
+        $this->initAll('dummy/')
+             ->getPath()
+             ->shouldReturn('dummy/');
+    }
+    public function it_should_return_true_from_has_dirs_when_there_is_at_less_one()
+    {
+        $this->initAll('/')
+             ->hasDirs()
+             ->shouldReturn(false);
+        $paths = [
+            'dummy',
+            'http:///dummy/',
+            'vfs::\\\\C:\\dummy',
+            'ftp://vfs:///dummy/dir'
+        ];
+        foreach ($paths as $path) {
+            $this->initAll($path)
+                 ->hasDirs()
+                 ->shouldReturn(true);
+        }
+    }
+    public function it_should_return_true_from_has_wrappers_when_there_are_wrappers()
+    {
+        $this->initAll('dummy/')
+             ->hasWrappers()
+             ->shouldReturn(false);
+        $paths = [
+            'ftp://dummy',
+            'http:///dummy/',
+            'vfs::\\\\C:\\dummy',
+            'ftp://vfs:///dummy/'
+        ];
+        foreach ($paths as $path) {
+            $this->initAll($path)
+                 ->hasWrappers()
+                 ->shouldReturn(true);
+        }
+    }
+    public function it_should_return_true_from_is_absolute_path_when_it_is()
+    {
+        $this->initAll('dummy/')
+             ->isAbsolutePath()
+             ->shouldReturn(false);
+        $paths = [
+            'ftp:///dummy',
+            'http:///dummy/',
+            'vfs::\\\\C:\\dummy',
+            'ftp://vfs:///dummy/'
+        ];
+        foreach ($paths as $path) {
+            $this->initAll($path)
+                 ->isAbsolutePath()
+                 ->shouldReturn(true);
+        }
+    }
+    public function it_throws_exception_for_empty_path_from_init_all()
     {
         $paths = [
             '',
@@ -60,7 +168,7 @@ class PathInfoSpec extends ObjectBehavior
                  ->during('initAll', [$path]);
         }
     }
-    public function it_throws_exception_for_illegal_characters_in_path_from_initAll()
+    public function it_throws_exception_for_illegal_characters_in_path_from_init_all()
     {
         $paths = [
             "\034",
