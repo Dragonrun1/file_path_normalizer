@@ -62,6 +62,9 @@ class PathInfo implements PathInfoInterface
      */
     public function getDirList(): array
     {
+        if (!$this->hasDirs()) {
+            return [];
+        }
         $path = str_replace('\\', '/', trim($this->dirs));
         // Drop any leading and trailing "/"s.
         $path = trim($path, '/');
