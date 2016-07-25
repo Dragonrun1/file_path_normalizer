@@ -57,15 +57,78 @@ class FilePathNormalizerSpec extends ObjectBehavior
     {
         $this->shouldHaveType('FilePathNormalizer\FilePathNormalizer');
     }
+    public function it_should_return_correctly_converted_path_from_normalize_path($pathInfo)
+    {
+        /**
+         * @var PathInfoInterface $pathInfo
+         */
+        /** @noinspection PhpStrictTypeCheckingInspection */
+        $pathInfo->initAll(Argument::any())
+                 ->shouldBeCalled();
+        $options = FilePathNormalizerInterface::ABSOLUTE_ALLOWED | FilePathNormalizerInterface::VFS_DISABLED | FilePathNormalizerInterface::WRAPPER_ALLOWED;
+        $paths = [
+            'c:\\dummy' =>
+                ['wrappers' => [], 'root' => 'c:/', 'dirs' => ['dummy'], 'result' => 'c:/dummy/'],
+            'c:\\dummy\\' =>
+                ['wrappers' => [], 'root' => 'c:/', 'dirs' => ['dummy'], 'result' => 'c:/dummy/'],
+            '/dummy' =>
+                ['wrappers' => [], 'root' => '/', 'dirs' => ['dummy'], 'result' => '/dummy/'],
+            '/dummy/' =>
+                ['wrappers' => [], 'root' => '/', 'dirs' => ['dummy'], 'result' => '/dummy/'],
+            'c:\\dummy\\path' =>
+                ['wrappers' => [], 'root' => 'c:/', 'dirs' => ['dummy', 'path'], 'result' => 'c:/dummy/path/'],
+            'c:\\dummy\\path\\' =>
+                ['wrappers' => [], 'root' => 'c:/', 'dirs' => ['dummy', 'path'], 'result' => 'c:/dummy/path/'],
+            '/dummy/path' =>
+                ['wrappers' => [], 'root' => '/', 'dirs' => ['dummy', 'path'], 'result' => '/dummy/path/'],
+            '/dummy/path/' =>
+                ['wrappers' => [], 'root' => '/', 'dirs' => ['dummy', 'path'], 'result' => '/dummy/path/'],
+            'dummy' =>
+                ['wrappers' => [], 'root' => '', 'dirs' => ['dummy'], 'result' => 'dummy/'],
+            'dummy\\' =>
+                ['wrappers' => [], 'root' => '', 'dirs' => ['dummy'], 'result' => 'dummy/'],
+            'dummy/' =>
+                ['wrappers' => [], 'root' => '', 'dirs' => ['dummy'], 'result' => 'dummy/'],
+            'ftp://dummy' =>
+                ['wrappers' => ['ftp'], 'root' => '', 'dirs' => ['dummy'], 'result' => 'ftp://dummy/'],
+            'ftp://dummy\\' =>
+                ['wrappers' => ['ftp'], 'root' => '', 'dirs' => ['dummy'], 'result' => 'ftp://dummy/'],
+            'ftp://dummy/' =>
+                ['wrappers' => ['ftp'], 'root' => '', 'dirs' => ['dummy'], 'result' => 'ftp://dummy/'],
+            'ftp://c:\\dummy' =>
+                ['wrappers' => ['ftp'], 'root' => 'c:/', 'dirs' => ['dummy'], 'result' => 'ftp://c:/dummy/'],
+            '/dummy/../path' =>
+                ['wrappers' => [], 'root' => '/', 'dirs' => ['dummy', '..', 'path'], 'result' => '/path/'],
+            '/dummy/./path' =>
+                ['wrappers' => [], 'root' => '/', 'dirs' => ['dummy', '.', 'path'], 'result' => '/dummy/path/'],
+        ];
+        foreach ($paths as $given => $expected) {
+            $pathInfo->getWrapperList()
+                     ->willReturn($expected['wrappers']);
+            $pathInfo->hasWrappers()
+                     ->willReturn((bool)count($expected['wrappers']));
+            $pathInfo->getRoot()
+                     ->willReturn($expected['root']);
+            $pathInfo->getDirList()
+                     ->willReturn($expected['dirs']);
+            /** @noinspection DisconnectedForeachInstructionInspection */
+            $this->setPathInfo($pathInfo);
+            $this->normalizePath($given, $options)
+                 ->shouldReturn($expected['result']);
+        }
+    }
     public function it_throws_exception_for_duplicate_wrappers_from_normalize_x($pathInfo)
     {
         /**
          * @var PathInfoInterface $pathInfo
          */
+        /** @noinspection PhpStrictTypeCheckingInspection */
         $pathInfo->initAll(Argument::any())
                  ->shouldBeCalled();
-        $pathInfo->getWrappers()
-                 ->willReturn('ftp://vfs://ftp://');
+        $pathInfo->getWrapperList()
+                 ->willReturn(['ftp', 'vfs', 'ftp']);
+        $pathInfo->hasWrappers()
+                 ->willReturn(true);
         $paths = [
             'ftp://vfs://ftp://c:/dummy',
             'ftp://vfs://ftp:///dummy',
@@ -91,6 +154,19 @@ class FilePathNormalizerSpec extends ObjectBehavior
                  ->during('normalizeFile', [$path, $options]);
         }
     }
+    public function it_throws_exception_for_empty_file_name_from_normalize_file()
+    {
+        $paths = [
+            '/dummy/',
+            '/dummy/ ',
+            '/dummy/  '
+        ];
+        $mess = 'An empty file name is NOT allowed';
+        foreach ($paths as $path) {
+            $this->shouldThrow(new \DomainException($mess))
+                 ->during('normalizeFile', [$path]);
+        }
+    }
     public function it_throws_exception_for_forbidden_option_combinations_from_normalize_x()
     {
         $options = FilePathNormalizerInterface::VFS_REQUIRED | FilePathNormalizerInterface::ABSOLUTE_REQUIRED;
@@ -103,10 +179,15 @@ class FilePathNormalizerSpec extends ObjectBehavior
         /**
          * @var PathInfoInterface $pathInfo
          */
+        /** @noinspection PhpStrictTypeCheckingInspection */
         $pathInfo->initAll(Argument::any())
                  ->shouldBeCalled();
-        $pathInfo->getWrappers()
-                 ->willReturn('');
+        $pathInfo->getWrapperList()
+                 ->willReturn([]);
+        $pathInfo->hasWrappers()
+                 ->willReturn(false);
+        $pathInfo->isAbsolutePath()
+                 ->willReturn(true);
         $paths = [
             'c:/dummy' => 'c:/',
             '/dummy' => '/'
@@ -139,10 +220,13 @@ class FilePathNormalizerSpec extends ObjectBehavior
         /**
          * @var PathInfoInterface $pathInfo
          */
+        /** @noinspection PhpStrictTypeCheckingInspection */
         $pathInfo->initAll(Argument::any())
                  ->shouldBeCalled();
-        $pathInfo->getWrappers()
-                 ->willReturn('vfs://');
+        $pathInfo->getWrapperList()
+                 ->willReturn(['vfs']);
+        $pathInfo->hasWrappers()
+                 ->willReturn(true);
         $paths = [
             'vfs://c:/dummy',
             'vfs:///dummy',
@@ -173,10 +257,13 @@ class FilePathNormalizerSpec extends ObjectBehavior
         /**
          * @var PathInfoInterface $pathInfo
          */
+        /** @noinspection PhpStrictTypeCheckingInspection */
         $pathInfo->initAll(Argument::any())
                  ->shouldBeCalled();
         $pathInfo->getWrappers()
                  ->willReturn('vfs://');
+        $pathInfo->hasWrappers()
+                 ->willReturn(true);
         $paths = [
             'vfs://c:/dummy',
             'vfs:///dummy',
@@ -202,26 +289,42 @@ class FilePathNormalizerSpec extends ObjectBehavior
                  ->during('normalizeFile', [$path, $options]);
         }
     }
+    public function it_throws_exception_for_illegal_characters_in_file_name_from_normalize_file()
+    {
+        $paths = [
+            "/dummy/\034",
+            "/dummy/ \034",
+            "/dummy/\034  "
+        ];
+        $mess = 'Using any non-printable characters in the file name is NOT allowed';
+        foreach ($paths as $path) {
+            $this->shouldThrow(new \DomainException($mess))
+                 ->during('normalizeFile', [$path]);
+        }
+    }
     public function it_throws_exception_for_invalid_formatted_wrapper_names_from_normalize_x($pathInfo)
     {
         /**
          * @var PathInfoInterface $pathInfo
          */
+        /** @noinspection PhpStrictTypeCheckingInspection */
         $pathInfo->initAll(Argument::any())
                  ->shouldBeCalled();
+        $pathInfo->hasWrappers()
+                 ->willReturn(true);
         $paths = [
-            '_ftp://vfs://ftp://c:/dummy',
-            '_ftp://vfs://ftp:///dummy',
-            '_ftp://vfs://ftp://dummy',
-            'ft-p://vfs://ftp://c:/dummy',
-            'ft-p://vfs://ftp:///dummy',
-            'ft-p://vfs://ftp://dummy'
+            '_ftp://vfs://ftp://c:/dummy' => ['_ftp', 'vfs', 'ftp'],
+            '_ftp://vfs://ftp:///dummy' => ['_ftp', 'vfs', 'ftp'],
+            '_ftp://vfs://ftp://dummy' => ['_ftp', 'vfs', 'ftp'],
+            'ft-p://vfs://ftp://c:/dummy' => ['ft-p', 'vfs', 'ftp'],
+            'ft-p://vfs://ftp:///dummy' => ['ft-p', 'vfs', 'ftp'],
+            'ft-p://vfs://ftp://dummy' => ['ft-p', 'vfs', 'ftp']
         ];
         $options = FilePathNormalizerInterface::VFS_ALLOWED | FilePathNormalizerInterface::WRAPPER_ALLOWED;
         $mess = 'Invalidly formatted wrapper name found';
-        foreach ($paths as $path) {
-            $pathInfo->getWrappers()
-                     ->willReturn(substr($path, 0, 19));
+        foreach ($paths as $path => $wrappers) {
+            $pathInfo->getWrapperList()
+                     ->willReturn($wrappers);
             /** @noinspection DisconnectedForeachInstructionInspection */
             $this->setPathInfo($pathInfo);
             $this->shouldThrow(new \DomainException($mess))
@@ -249,12 +352,17 @@ class FilePathNormalizerSpec extends ObjectBehavior
         /**
          * @var PathInfoInterface $pathInfo
          */
+        /** @noinspection PhpStrictTypeCheckingInspection */
         $pathInfo->initAll(Argument::any())
                  ->shouldBeCalled();
-        $pathInfo->getWrappers()
-                 ->willReturn('');
+        $pathInfo->getWrapperList()
+                 ->willReturn([]);
+        $pathInfo->hasWrappers()
+                 ->willReturn(false);
         $pathInfo->getRoot()
                  ->willReturn('');
+        $pathInfo->isAbsolutePath()
+                 ->willReturn(false);
         $this->setPathInfo($pathInfo);
         $paths = ['dummy'];
         $mess = 'Absolute path required but root part missing';
@@ -274,10 +382,13 @@ class FilePathNormalizerSpec extends ObjectBehavior
         /**
          * @var PathInfoInterface $pathInfo
          */
+        /** @noinspection PhpStrictTypeCheckingInspection */
         $pathInfo->initAll(Argument::any())
                  ->shouldBeCalled();
-        $pathInfo->getWrappers()
-                 ->willReturn('');
+        $pathInfo->getWrapperList()
+                 ->willReturn([]);
+        $pathInfo->hasWrappers()
+                 ->willReturn(false);
         $this->setPathInfo($pathInfo);
         $paths = [
             'c:/dummy',
@@ -305,10 +416,13 @@ class FilePathNormalizerSpec extends ObjectBehavior
         /**
          * @var PathInfoInterface $pathInfo
          */
+        /** @noinspection PhpStrictTypeCheckingInspection */
         $pathInfo->initAll(Argument::any())
                  ->shouldBeCalled();
         $pathInfo->getWrappers()
                  ->willReturn('');
+        $pathInfo->hasWrappers()
+                 ->willReturn(false);
         $this->setPathInfo($pathInfo);
         $paths = [
             'c:/dummy',
@@ -336,21 +450,21 @@ class FilePathNormalizerSpec extends ObjectBehavior
         /**
          * @var PathInfoInterface $pathInfo
          */
+        /** @noinspection PhpStrictTypeCheckingInspection */
         $pathInfo->initAll(Argument::any())
                  ->shouldBeCalled();
+        $pathInfo->hasWrappers()
+                 ->willReturn(true);
         $paths = [
-            'vfs://ftp://c:/dummy',
-            'vfs://ftp:///dummy',
-            'vfs://ftp://dummy',
-            'vfs://ftp://c:/dummy',
-            'vfs://ftp:///dummy',
-            'vfs://ftp://dummy'
+            'vfs://ftp://c:/dummy' => ['vfs', 'ftp'],
+            'vfs://ftp:///dummy' => ['vfs', 'ftp'],
+            'vfs://ftp://dummy' => ['vfs', 'ftp']
         ];
         $options = FilePathNormalizerInterface::VFS_ALLOWED | FilePathNormalizerInterface::WRAPPER_ALLOWED;
         $mess = 'Must use vfsStream as last wrapper';
-        foreach ($paths as $path) {
-            $pathInfo->getWrappers()
-                     ->willReturn(substr($path, 0, 12));
+        foreach ($paths as $path => $wrappers) {
+            $pathInfo->getWrapperList()
+                     ->willReturn($wrappers);
             /** @noinspection DisconnectedForeachInstructionInspection */
             $this->setPathInfo($pathInfo);
             $this->shouldThrow(new \DomainException($mess))
