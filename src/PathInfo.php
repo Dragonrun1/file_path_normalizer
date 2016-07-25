@@ -100,10 +100,13 @@ class PathInfo implements PathInfoInterface
      */
     public function getWrapperList(): array
     {
-        $wrappers = explode('://', $this->wrappers);
-        // Discard empty artifact.
-        array_pop($wrappers);
-        return $wrappers;
+        if ($this->hasWrappers()) {
+            $wrappers = explode('://', $this->wrappers);
+            // Discard empty artifact.
+            array_pop($wrappers);
+            return $wrappers;
+        }
+        return [];
     }
     /**
      * @return string
@@ -129,10 +132,10 @@ class PathInfo implements PathInfoInterface
     /**
      * @param string $path
      *
-     * @return $this Fluent interface.
+     * @return PathInfoInterface Fluent interface.
      * @throws \DomainException
      */
-    public function initAll(string $path)
+    public function initAll(string $path): PathInfoInterface
     {
         $this->path = $path;
         list($this->wrappers, $this->root, $this->dirs) = $this->getPathParts();
