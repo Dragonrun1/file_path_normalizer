@@ -1,5 +1,4 @@
-README.md
-=========
+# README.md
 
 Master: [![Build Status](https://travis-ci.org/Dragonrun1/file_path_normalizer.svg?branch=master)](https://travis-ci.org/Dragonrun1/file_path_normalizer)
 
@@ -300,3 +299,45 @@ the BSes have already been handled before this point.
 
 So hopefully the above text and example have helped you better understand paths
 and how `FilePathNormalizer` can help you deal with them better.
+
+## Installing
+
+File Path Normalizer is available through
+[Packagest](https://packagist.org/packages/dragonrun1/file_path_normalizer)
+and can be installed using composer:
+
+```shell
+composer require dragonrun1/file_path_normalizer
+```
+
+## Backward Compatibility Breaking Changes
+
+With version 2.0.0 there have been some BC changes application developers should
+be aware of:
+
+  * Minimum PHP version is now 7.0.0. Time to start leading into the future.
+  * Legacy use of bool option on normalizeFile() and normalizePath has been dropped.
+  * Enabling or allowing VFSStream with absolute path is no longer allowed. Have
+  this exception was more confusing than useful.
+  * Options are now validated and many combinations that might have been allowed
+  before but were not attended now cause an exception to be thrown.
+  * With changed to VFSStream and absolute path plus changes to wrapper and
+  VFSStream allowed interact the default has changed to:
+  ``` const MODE_DEFAULT = self::ABSOLUTE_REQUIRED | self::VFS_DISABLED | self::WRAPPER_ALLOWED;```
+  * Better checking of wrappers to close some additional edge cases.
+
+## New Features
+
+With version 2.0.0 some new features have been added.
+
+  * New PathInfo class was extracted and can now be used by application
+  developers for their other path related needs. It makes the same `wrappers`,
+  `root` and `dirs` parts that are used internally available so you can for
+  example strip off all wrappers or strip off absolute part of path.
+  * All testing has been re-written to use PHPSpec examples instead of having
+  mix of PHPUnit tests and PHPSpec examples.
+  * New PHPSpec examples have been add which has greatly increased code coverage
+  and code quality.
+  * New and updated interfaces available for all aspects of the library.
+  * New PathInfoTrait to make adding it to your own code easier.
+  * FilePathNormalizerTrait::getFpn() is now public.
