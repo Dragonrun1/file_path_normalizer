@@ -54,7 +54,7 @@ use PhpSpec\ObjectBehavior;
 class PathInfoTraitSpec extends ObjectBehavior
 {
     /**
-     * @param $pathInfo
+     * @param \FilePathNormalizer\PathInfo $pathInfo
      */
     public function it_provides_fluent_interface_from_set_pathInfo($pathInfo)
     {
@@ -72,7 +72,7 @@ class PathInfoTraitSpec extends ObjectBehavior
              ->shouldReturn($result);
     }
     /**
-     * @param $pathInfo
+     * @param \FilePathNormalizer\PathInfo $pathInfo
      */
     public function it_should_return_same_instance_that_it_is_given($pathInfo)
     {
@@ -84,9 +84,9 @@ class PathInfoTraitSpec extends ObjectBehavior
              ->shouldReturn($pathInfo);
     }
     /**
-     * @param PathInfoInterface $pathInfo
+     * @internal PathInfoInterface $pathInfo
      */
-    public function let(PathInfoInterface $pathInfo)
+    public function let(/**PathInfoInterface $pathInfo*/)
     {
         $this->beAnInstanceOf('\\Spec\\FilePathNormalizer\\MockPathInfoTrait');
     }

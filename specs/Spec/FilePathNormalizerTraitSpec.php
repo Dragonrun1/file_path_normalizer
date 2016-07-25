@@ -52,7 +52,7 @@ use PhpSpec\ObjectBehavior;
 class FilePathNormalizerTraitSpec extends ObjectBehavior
 {
     /**
-     * @param $fpn
+     * @param \FilePathNormalizer\FilePathNormalizer $fpn
      */
     public function it_provides_fluent_interface_from_set_fpn($fpn)
     {
@@ -79,9 +79,9 @@ class FilePathNormalizerTraitSpec extends ObjectBehavior
              ->shouldReturn($fpn);
     }
     /**
-     * @param FilePathNormalizerInterface $fpn
+     * @internal FilePathNormalizerInterface $fpn
      */
-    public function let(FilePathNormalizerInterface $fpn)
+    public function let(/**FilePathNormalizerInterface $fpn*/)
     {
         $this->beAnInstanceOf('\\Spec\\FilePathNormalizer\\MockFilePathNormalizerTrait');
 //        $this->willImplement('\\FilePathNormalizer\\FilePathNormalizerAwareInterface');
