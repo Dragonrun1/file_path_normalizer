@@ -40,7 +40,7 @@ trait PathInfoTrait
 {
     /**
      * @return PathInfoInterface
-     * @throws \LogicException
+     * @throws \DomainException
      * @api
      */
     public function getPathInfo(): PathInfoInterface
