@@ -70,7 +70,12 @@ class FilePathNormalizer implements FilePathNormalizerInterface, PathInfoAwareIn
      */
     public function normalizeFile(string $file, int $options = self::MODE_DEFAULT): string
     {
-        list($fileName, $path) = explode('/', strrev(str_replace('\\', '/', $file)), 2);
+        $file = str_replace('\\', '/', $file);
+        if (false === strrpos($file, '/')) {
+            $mess = 'An empty path is NOT allowed';
+            throw new \DomainException($mess);
+        }
+        list($fileName, $path) = explode('/', strrev($file), 2);
         $path = strrev($path);
         $fileName = trim(strrev($fileName));
         if ('' === $fileName) {

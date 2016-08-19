@@ -154,6 +154,15 @@ class FilePathNormalizerSpec extends ObjectBehavior
                  ->during('normalizeFile', [$path, $options]);
         }
     }
+    public function it_throws_exception_for_empty_dir_from_normalize_file()
+    {
+        $paths = ['dummy'];
+        $mess = 'An empty path is NOT allowed';
+        foreach ($paths as $path) {
+            $this->shouldThrow(new \DomainException($mess))
+                 ->during('normalizeFile', [$path]);
+        }
+    }
     public function it_throws_exception_for_empty_file_name_from_normalize_file()
     {
         $paths = [
