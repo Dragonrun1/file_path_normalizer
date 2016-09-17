@@ -79,9 +79,9 @@ class FilePathNormalizerTraitSpec extends ObjectBehavior
              ->shouldReturn($fpn);
     }
     /**
-     * @internal FilePathNormalizerInterface $fpn
+     * @param FilePathNormalizerInterface $fpn
      */
-    public function let(/**FilePathNormalizerInterface $fpn*/)
+    public function let(FilePathNormalizerInterface $fpn)
     {
         $this->beAnInstanceOf('\\Spec\\FilePathNormalizer\\MockFilePathNormalizerTrait');
     }

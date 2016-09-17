@@ -84,9 +84,9 @@ class PathInfoTraitSpec extends ObjectBehavior
              ->shouldReturn($pathInfo);
     }
     /**
-     * @internal PathInfoInterface $pathInfo
+     * @param PathInfoInterface $pathInfo
      */
-    public function let(/**PathInfoInterface $pathInfo*/)
+    public function let(PathInfoInterface $pathInfo)
     {
         $this->beAnInstanceOf('\\Spec\\FilePathNormalizer\\MockPathInfoTrait');
     }
