@@ -3,12 +3,12 @@ declare(strict_types = 1);
 /**
  * Contains FilePathNormalizerTraitSpec class.
  *
- * PHP version 7.0
+ * PHP version 7.1
  *
  * LICENSE:
  * This file is part of file_path_normalizer which is used to normalize PHP file
  * paths without several of the shortcomings of the built-in functions.
- * Copyright (C) 2015-2016 Michael Cummings
+ * Copyright (C) 2015-2018 Michael Cummings
  *
  * This program is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -36,6 +36,7 @@ namespace Spec\FilePathNormalizer;
 
 use FilePathNormalizer\FilePathNormalizerInterface;
 use PhpSpec\ObjectBehavior;
+use Spec\FilePathNormalizer\MockFilePathNormalizerTrait as MockFilePathNormalizerTraitAlias;
 
 /**
  * Class FilePathNormalizerTraitSpec
@@ -51,38 +52,26 @@ use PhpSpec\ObjectBehavior;
  */
 class FilePathNormalizerTraitSpec extends ObjectBehavior
 {
-    /**
-     * @param \FilePathNormalizer\FilePathNormalizer $fpn
-     */
-    public function it_provides_fluent_interface_from_set_fpn($fpn)
+    public function it_provides_fluent_interface_from_set_fpn(FilePathNormalizerInterface $fpn): void
     {
-        /**
-         * @var FilePathNormalizerInterface $fpn
-         */
         $this->setFpn($fpn)
              ->shouldReturn($this);
     }
-    public function it_should_return_new_instance_like_factory_first_call()
+    public function it_should_return_new_instance_like_factory_first_call(): void
     {
         $result = $this->getFpn()
-                       ->shouldHaveType('\FilePathNormalizer\FilePathNormalizerInterface');
+                       ->shouldHaveType(FilePathNormalizerInterface::class);
         $this->getFpn()
              ->shouldReturn($result);
     }
-    /**
-     * @param \FilePathNormalizer\FilePathNormalizer $fpn Instance of fpn.
-     */
-    public function it_should_return_same_instance_that_it_is_given($fpn)
+    public function it_should_return_same_instance_that_it_is_given(FilePathNormalizerInterface $fpn): void
     {
         $this->setFpn($fpn)
              ->getFpn()
              ->shouldReturn($fpn);
     }
-    /**
-     * @param FilePathNormalizerInterface $fpn
-     */
-    public function let(FilePathNormalizerInterface $fpn)
+    public function let(): void
     {
-        $this->beAnInstanceOf('\\Spec\\FilePathNormalizer\\MockFilePathNormalizerTrait');
+        $this->beAnInstanceOf(MockFilePathNormalizerTraitAlias::class);
     }
 }

@@ -1,14 +1,14 @@
 <?php
-declare(strict_types = 1);
+declare(strict_types=1);
 /**
  * Contains PathInfoTraitSpec class.
  *
- * PHP version 7.0
+ * PHP version 7.1
  *
  * LICENSE:
  * This file is part of file_path_normalizer which is used to normalize PHP file
  * paths without several of the shortcomings of the built-in functions.
- * Copyright (C) 2016 Michael Cummings
+ * Copyright (C) 2016-2018 Michael Cummings
  *
  * This program is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -26,12 +26,13 @@ declare(strict_types = 1);
  * You should be able to find a copy of this license in the LICENSE file.
  *
  * @author    Michael Cummings <mgcummings@yahoo.com>
- * @copyright 2016 Michael Cummings
+ * @copyright 2016-2018 Michael Cummings
  * @license   GPL-2.0
  */
 /**
  * Test namespace.
  */
+
 namespace Spec\FilePathNormalizer;
 
 use FilePathNormalizer\PathInfoInterface;
@@ -53,10 +54,7 @@ use PhpSpec\ObjectBehavior;
  */
 class PathInfoTraitSpec extends ObjectBehavior
 {
-    /**
-     * @param \FilePathNormalizer\PathInfo $pathInfo
-     */
-    public function it_provides_fluent_interface_from_set_pathInfo($pathInfo)
+    public function it_provides_fluent_interface_from_set_pathInfo(PathInfoInterface $pathInfo): void
     {
         /**
          * @var PathInfoInterface $pathInfo
@@ -64,17 +62,14 @@ class PathInfoTraitSpec extends ObjectBehavior
         $this->setPathInfo($pathInfo)
              ->shouldReturn($this);
     }
-    public function it_should_return_new_instance_like_factory_first_call()
+    public function it_should_return_new_instance_like_factory_first_call(): void
     {
         $result = $this->getPathInfo()
-                       ->shouldHaveType('\FilePathNormalizer\PathInfoInterface');
+                       ->shouldHaveType(PathInfoInterface::class);
         $this->getPathInfo()
              ->shouldReturn($result);
     }
-    /**
-     * @param \FilePathNormalizer\PathInfo $pathInfo
-     */
-    public function it_should_return_same_instance_that_it_is_given($pathInfo)
+    public function it_should_return_same_instance_that_it_is_given(PathInfoInterface $pathInfo): void
     {
         /**
          * @var PathInfoInterface $pathInfo
@@ -83,11 +78,8 @@ class PathInfoTraitSpec extends ObjectBehavior
              ->getPathInfo()
              ->shouldReturn($pathInfo);
     }
-    /**
-     * @param PathInfoInterface $pathInfo
-     */
-    public function let(PathInfoInterface $pathInfo)
+    public function let(PathInfoInterface $pathInfo): void
     {
-        $this->beAnInstanceOf('\\Spec\\FilePathNormalizer\\MockPathInfoTrait');
+        $this->beAnInstanceOf(MockPathInfoTrait::class);
     }
 }

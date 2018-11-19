@@ -1,14 +1,14 @@
 <?php
-declare(strict_types = 1);
+declare(strict_types=1);
 /**
  * Contains class PathInfoSpec.
  *
- * PHP version 7.0
+ * PHP version 7.1
  *
  * LICENSE:
  * This file is part of file_path_normalizer which is used to normalize PHP file
  * paths without several of the shortcomings of the built-in functions.
- * Copyright (C) 2016 Michael Cummings
+ * Copyright (C) 2016-2018 Michael Cummings
  *
  * This program is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -26,14 +26,16 @@ declare(strict_types = 1);
  * You should be able to find a copy of this license in the LICENSE file.
  *
  * @author    Michael Cummings <mgcummings@yahoo.com>
- * @copyright 2016 Michael Cummings
+ * @copyright 2016-2018 Michael Cummings
  * @license   GPL-2.0
  */
 /**
  * Test namespace.
  */
+
 namespace Spec\FilePathNormalizer;
 
+use FilePathNormalizer\PathInfo;
 use PhpSpec\ObjectBehavior;
 
 /**
@@ -52,11 +54,11 @@ use PhpSpec\ObjectBehavior;
  */
 class PathInfoSpec extends ObjectBehavior
 {
-    public function it_is_initializable()
+    public function it_is_initializable(): void
     {
-        $this->shouldHaveType('FilePathNormalizer\PathInfo');
+        $this->shouldHaveType(PathInfo::class);
     }
-    public function it_should_have_basic_getters_that_return_raw_parts()
+    public function it_should_have_basic_getters_that_return_raw_parts(): void
     {
         $this->initAll('ftp:///dummy');
         $this->getWrappers()
@@ -66,7 +68,7 @@ class PathInfoSpec extends ObjectBehavior
         $this->getDirs()
              ->shouldReturn('dummy');
     }
-    public function it_should_return_correct_wrappers_from_get_wrappers_list()
+    public function it_should_return_correct_wrappers_from_get_wrappers_list(): void
     {
         $paths = [
             '/' => [],
@@ -82,7 +84,7 @@ class PathInfoSpec extends ObjectBehavior
                  ->shouldReturn($expected);
         }
     }
-    public function it_should_return_correctly_cleaned_dir_parts_from_get_dir_list()
+    public function it_should_return_correctly_cleaned_dir_parts_from_get_dir_list(): void
     {
         $paths = [
             '/' => [],
@@ -98,13 +100,13 @@ class PathInfoSpec extends ObjectBehavior
                  ->shouldReturn($expected);
         }
     }
-    public function it_should_return_original_given_path_from_get_path()
+    public function it_should_return_original_given_path_from_get_path(): void
     {
         $this->initAll('dummy/')
              ->getPath()
              ->shouldReturn('dummy/');
     }
-    public function it_should_return_true_from_has_dirs_when_there_is_at_less_one()
+    public function it_should_return_true_from_has_dirs_when_there_is_at_less_one(): void
     {
         $this->initAll('/')
              ->hasDirs()
@@ -121,7 +123,7 @@ class PathInfoSpec extends ObjectBehavior
                  ->shouldReturn(true);
         }
     }
-    public function it_should_return_true_from_has_wrappers_when_there_are_wrappers()
+    public function it_should_return_true_from_has_wrappers_when_there_are_wrappers(): void
     {
         $this->initAll('dummy/')
              ->hasWrappers()
@@ -138,7 +140,7 @@ class PathInfoSpec extends ObjectBehavior
                  ->shouldReturn(true);
         }
     }
-    public function it_should_return_true_from_is_absolute_path_when_it_is()
+    public function it_should_return_true_from_is_absolute_path_when_it_is(): void
     {
         $this->initAll('dummy/')
              ->isAbsolutePath()
@@ -155,7 +157,7 @@ class PathInfoSpec extends ObjectBehavior
                  ->shouldReturn(true);
         }
     }
-    public function it_throws_exception_for_empty_path_from_init_all()
+    public function it_throws_exception_for_empty_path_from_init_all(): void
     {
         $paths = [
             '',
@@ -168,7 +170,7 @@ class PathInfoSpec extends ObjectBehavior
                  ->during('initAll', [$path]);
         }
     }
-    public function it_throws_exception_for_illegal_characters_in_path_from_init_all()
+    public function it_throws_exception_for_illegal_characters_in_path_from_init_all(): void
     {
         $paths = [
             "\034",
@@ -181,7 +183,7 @@ class PathInfoSpec extends ObjectBehavior
                  ->during('initAll', [$path]);
         }
     }
-    public function let()
+    public function let(): void
     {
         $this->beConstructedWith('dummy');
     }

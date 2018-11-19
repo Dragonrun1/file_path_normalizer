@@ -1,14 +1,14 @@
 <?php
-declare(strict_types = 1);
+declare(strict_types=1);
 /**
  * Contains FilePathNormalizerSpec class.
  *
- * PHP version 7.0
+ * PHP version 7.1
  *
  * LICENSE:
  * This file is part of file_path_normalizer which is used to normalize PHP file
  * paths without several of the shortcomings of the built-in functions.
- * Copyright (C) 2015-2016 Michael Cummings
+ * Copyright (C) 2015-2018 Michael Cummings
  *
  * This program is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -32,8 +32,10 @@ declare(strict_types = 1);
 /**
  * Test namespace.
  */
+
 namespace Spec\FilePathNormalizer;
 
+use FilePathNormalizer\FilePathNormalizer;
 use FilePathNormalizer\FilePathNormalizerInterface;
 use FilePathNormalizer\PathInfoInterface;
 use PhpSpec\ObjectBehavior;
@@ -46,6 +48,7 @@ use Prophecy\Argument;
  *
  * @method void during($method, array $params)
  * @method void shouldBe($value)
+ * @method void shouldBeCalled()
  * @method void shouldContain($value)
  * @method void shouldHaveKey($key)
  * @method void shouldNotEqual($value)
@@ -53,15 +56,12 @@ use Prophecy\Argument;
  */
 class FilePathNormalizerSpec extends ObjectBehavior
 {
-    public function it_is_initializable()
+    public function it_is_initializable(): void
     {
-        $this->shouldHaveType('FilePathNormalizer\FilePathNormalizer');
+        $this->shouldHaveType(FilePathNormalizer::class);
     }
-    public function it_should_return_correctly_converted_path_from_normalize_path($pathInfo)
+    public function it_should_return_correctly_converted_path_from_normalize_path(PathInfoInterface $pathInfo): void
     {
-        /**
-         * @var PathInfoInterface $pathInfo
-         */
         /** @noinspection PhpStrictTypeCheckingInspection */
         $pathInfo->initAll(Argument::any())
                  ->shouldBeCalled();
@@ -100,24 +100,23 @@ class FilePathNormalizerSpec extends ObjectBehavior
             '/dummy/../path' =>
                 ['wrappers' => [], 'root' => '/', 'dirs' => ['dummy', '..', 'path'], 'result' => '/path/'],
             '/dummy/./path' =>
-                ['wrappers' => [], 'root' => '/', 'dirs' => ['dummy', '.', 'path'], 'result' => '/dummy/path/'],
+                ['wrappers' => [], 'root' => '/', 'dirs' => ['dummy', '.', 'path'], 'result' => '/dummy/path/']
         ];
         foreach ($paths as $given => $expected) {
             $pathInfo->getWrapperList()
                      ->willReturn($expected['wrappers']);
             $pathInfo->hasWrappers()
-                     ->willReturn((bool)count($expected['wrappers']));
+                     ->willReturn((bool)\count($expected['wrappers']));
             $pathInfo->getRoot()
                      ->willReturn($expected['root']);
             $pathInfo->getDirList()
                      ->willReturn($expected['dirs']);
-            /** @noinspection DisconnectedForeachInstructionInspection */
             $this->setPathInfo($pathInfo);
             $this->normalizePath($given, $options)
                  ->shouldReturn($expected['result']);
         }
     }
-    public function it_throws_exception_for_duplicate_wrappers_from_normalize_x($pathInfo)
+    public function it_throws_exception_for_duplicate_wrappers_from_normalize_x(PathInfoInterface $pathInfo): void
     {
         /**
          * @var PathInfoInterface $pathInfo
@@ -140,7 +139,7 @@ class FilePathNormalizerSpec extends ObjectBehavior
             /** @noinspection DisconnectedForeachInstructionInspection */
             $this->setPathInfo($pathInfo);
             $this->shouldThrow(new \DomainException($mess))
-                 ->during('normalizePath', [$path, $options]);
+                ->during('normalizePath', [$path, $options]);
         }
         $paths = [
             'ftp://vfs://ftp://c:/dummy/dummy.txt',
@@ -154,7 +153,7 @@ class FilePathNormalizerSpec extends ObjectBehavior
                  ->during('normalizeFile', [$path, $options]);
         }
     }
-    public function it_throws_exception_for_empty_dir_from_normalize_file()
+    public function it_throws_exception_for_empty_dir_from_normalize_file(): void
     {
         $paths = ['dummy'];
         $mess = 'An empty path is NOT allowed';
@@ -163,7 +162,7 @@ class FilePathNormalizerSpec extends ObjectBehavior
                  ->during('normalizeFile', [$path]);
         }
     }
-    public function it_throws_exception_for_empty_file_name_from_normalize_file()
+    public function it_throws_exception_for_empty_file_name_from_normalize_file(): void
     {
         $paths = [
             '/dummy/',
@@ -176,15 +175,31 @@ class FilePathNormalizerSpec extends ObjectBehavior
                  ->during('normalizeFile', [$path]);
         }
     }
-    public function it_throws_exception_for_forbidden_option_combinations_from_normalize_x()
+    public function it_throws_exception_for_excessive_up_directories(): void
+    {
+        $options = FilePathNormalizerInterface::ABSOLUTE_ALLOWED | FilePathNormalizerInterface::VFS_DISABLED | FilePathNormalizerInterface::WRAPPER_ALLOWED;
+        $paths = [
+            '/dummy/../..',
+            'dummy/../..',
+            'c:/dummy/../..',
+            'dummy/dummy/../../..'
+        ];
+        $mess = 'Unusual above root path found';
+        foreach ($paths as $path) {
+            $this->shouldThrow(new \DomainException($mess))
+                 ->during('normalizePath', [$path, $options]);
+        }
+    }
+    public function it_throws_exception_for_forbidden_option_combinations_from_normalize_x(): void
     {
         $options = FilePathNormalizerInterface::VFS_REQUIRED | FilePathNormalizerInterface::ABSOLUTE_REQUIRED;
         $mess = 'Can not use required or allowed options together with corresponding disabled option';
         $this->shouldThrow(new \DomainException($mess))
              ->during('normalizePath', ['dummy', $options]);
     }
-    public function it_throws_exception_for_having_absolute_path_when_absolute_is_disabled_from_normalize_x($pathInfo)
-    {
+    public function it_throws_exception_for_having_absolute_path_when_absolute_is_disabled_from_normalize_x(
+        PathInfoInterface $pathInfo
+    ): void {
         /**
          * @var PathInfoInterface $pathInfo
          */
@@ -205,11 +220,11 @@ class FilePathNormalizerSpec extends ObjectBehavior
         $options = FilePathNormalizerInterface::ABSOLUTE_DISABLED;
         foreach ($paths as $path => $root) {
             $pathInfo->getRoot()
-                     ->willReturn($root);
+                ->willReturn($root);
             /** @noinspection DisconnectedForeachInstructionInspection */
             $this->setPathInfo($pathInfo);
             $this->shouldThrow(new \DomainException($mess))
-                 ->during('normalizePath', [$path, $options]);
+                ->during('normalizePath', [$path, $options]);
         }
         $paths = [
             'c:/dummy/dummy.txt' => 'c:/',
@@ -224,8 +239,9 @@ class FilePathNormalizerSpec extends ObjectBehavior
                  ->during('normalizeFile', [$path, $options]);
         }
     }
-    public function it_throws_exception_for_having_vfsStream_wrapper_when_vfs_is_disabled_from_normalize_x($pathInfo)
-    {
+    public function it_throws_exception_for_having_vfsStream_wrapper_when_vfs_is_disabled_from_normalize_x(
+        PathInfoInterface $pathInfo
+    ): void {
         /**
          * @var PathInfoInterface $pathInfo
          */
@@ -247,7 +263,7 @@ class FilePathNormalizerSpec extends ObjectBehavior
             /** @noinspection DisconnectedForeachInstructionInspection */
             $this->setPathInfo($pathInfo);
             $this->shouldThrow(new \DomainException($mess))
-                 ->during('normalizePath', [$path, $options]);
+                ->during('normalizePath', [$path, $options]);
         }
         $paths = [
             'vfs://c:/dummy/dummy.txt',
@@ -261,8 +277,9 @@ class FilePathNormalizerSpec extends ObjectBehavior
                  ->during('normalizeFile', [$path, $options]);
         }
     }
-    public function it_throws_exception_for_having_wrapper_when_wrapper_is_disabled_from_normalize_x($pathInfo)
-    {
+    public function it_throws_exception_for_having_wrapper_when_wrapper_is_disabled_from_normalize_x(
+        PathInfoInterface $pathInfo
+    ): void {
         /**
          * @var PathInfoInterface $pathInfo
          */
@@ -284,7 +301,7 @@ class FilePathNormalizerSpec extends ObjectBehavior
             /** @noinspection DisconnectedForeachInstructionInspection */
             $this->setPathInfo($pathInfo);
             $this->shouldThrow(new \DomainException($mess))
-                 ->during('normalizePath', [$path, $options]);
+                ->during('normalizePath', [$path, $options]);
         }
         $paths = [
             'vfs://c:/dummy/dummy.txt',
@@ -298,7 +315,7 @@ class FilePathNormalizerSpec extends ObjectBehavior
                  ->during('normalizeFile', [$path, $options]);
         }
     }
-    public function it_throws_exception_for_illegal_characters_in_file_name_from_normalize_file()
+    public function it_throws_exception_for_illegal_characters_in_file_name_from_normalize_file(): void
     {
         $paths = [
             "/dummy/\034",
@@ -311,8 +328,8 @@ class FilePathNormalizerSpec extends ObjectBehavior
                  ->during('normalizeFile', [$path]);
         }
     }
-    public function it_throws_exception_for_invalid_formatted_wrapper_names_from_normalize_x($pathInfo)
-    {
+    public function it_throws_exception_for_invalid_formatted_wrapper_names_from_normalize_x(PathInfoInterface $pathInfo
+    ): void {
         /**
          * @var PathInfoInterface $pathInfo
          */
@@ -333,11 +350,11 @@ class FilePathNormalizerSpec extends ObjectBehavior
         $mess = 'Invalidly formatted wrapper name found';
         foreach ($paths as $path => $wrappers) {
             $pathInfo->getWrapperList()
-                     ->willReturn($wrappers);
+                ->willReturn($wrappers);
             /** @noinspection DisconnectedForeachInstructionInspection */
             $this->setPathInfo($pathInfo);
             $this->shouldThrow(new \DomainException($mess))
-                 ->during('normalizePath', [$path, $options]);
+                ->during('normalizePath', [$path, $options]);
         }
         $paths = [
             '_ftp://vfs://ftp://c:/dummy/dummy.txt',
@@ -356,8 +373,9 @@ class FilePathNormalizerSpec extends ObjectBehavior
                  ->during('normalizeFile', [$path, $options]);
         }
     }
-    public function it_throws_exception_for_missing_absolute_path_when_absolute_is_required_from_normalize_x($pathInfo)
-    {
+    public function it_throws_exception_for_missing_absolute_path_when_absolute_is_required_from_normalize_x(
+        PathInfoInterface $pathInfo
+    ): void {
         /**
          * @var PathInfoInterface $pathInfo
          */
@@ -386,8 +404,9 @@ class FilePathNormalizerSpec extends ObjectBehavior
                  ->during('normalizeFile', [$path, $options]);
         }
     }
-    public function it_throws_exception_for_missing_vfsStream_wrapper_when_vfs_is_required_from_normalize_x($pathInfo)
-    {
+    public function it_throws_exception_for_missing_vfsStream_wrapper_when_vfs_is_required_from_normalize_x(
+        PathInfoInterface $pathInfo
+    ): void {
         /**
          * @var PathInfoInterface $pathInfo
          */
@@ -420,8 +439,9 @@ class FilePathNormalizerSpec extends ObjectBehavior
                  ->during('normalizeFile', [$path, $options]);
         }
     }
-    public function it_throws_exception_for_missing_wrapper_when_wrapper_is_required_from_normalize_x($pathInfo)
-    {
+    public function it_throws_exception_for_missing_wrapper_when_wrapper_is_required_from_normalize_x(
+        PathInfoInterface $pathInfo
+    ): void {
         /**
          * @var PathInfoInterface $pathInfo
          */
@@ -454,8 +474,8 @@ class FilePathNormalizerSpec extends ObjectBehavior
                  ->during('normalizeFile', [$path, $options]);
         }
     }
-    public function it_throws_exception_for_vfsStream_wrapper_not_last_one_from_normalize_x($pathInfo)
-    {
+    public function it_throws_exception_for_vfsStream_wrapper_not_last_one_from_normalize_x(PathInfoInterface $pathInfo
+    ): void {
         /**
          * @var PathInfoInterface $pathInfo
          */
@@ -473,11 +493,11 @@ class FilePathNormalizerSpec extends ObjectBehavior
         $mess = 'Must use vfsStream as last wrapper';
         foreach ($paths as $path => $wrappers) {
             $pathInfo->getWrapperList()
-                     ->willReturn($wrappers);
+                ->willReturn($wrappers);
             /** @noinspection DisconnectedForeachInstructionInspection */
             $this->setPathInfo($pathInfo);
             $this->shouldThrow(new \DomainException($mess))
-                 ->during('normalizePath', [$path, $options]);
+                ->during('normalizePath', [$path, $options]);
         }
         $paths = [
             'vfs://ftp://c:/dummy/dummy.txt',
@@ -496,8 +516,8 @@ class FilePathNormalizerSpec extends ObjectBehavior
                  ->during('normalizeFile', [$path, $options]);
         }
     }
-    public function let($pathInfo)
+    public function let($pathInfo): void
     {
-        $pathInfo->beADoubleOf('\FilePathNormalizer\PathInfoInterface');
+        $pathInfo->beADoubleOf(PathInfoInterface::class);
     }
 }

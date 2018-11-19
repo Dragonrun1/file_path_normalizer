@@ -1,14 +1,14 @@
 <?php
-declare(strict_types = 1);
+declare(strict_types=1);
 /**
- * Contains MockFilePathNormalizerTrait class.
+ * Contains class MockPathInfoTrait.
  *
- * PHP version 7.0
+ * PHP version 7.1
  *
  * LICENSE:
  * This file is part of file_path_normalizer which is used to normalize PHP file
  * paths without several of the shortcomings of the built-in functions.
- * Copyright (C) 2015-2016 Michael Cummings
+ * Copyright (C) 2016-2018 Michael Cummings
  *
  * This program is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -21,28 +21,30 @@ declare(strict_types = 1);
  *
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see
- * <http://www.gnu.org/licenses/>.
+ * <http://spdx.org/licenses/GPL-2.0.html>.
  *
  * You should be able to find a copy of this license in the LICENSE file.
  *
- * @copyright 2015-2016 Michael Cummings
- * @license   GPL-2.0
  * @author    Michael Cummings <mgcummings@yahoo.com>
+ * @copyright 2016-2018 Michael Cummings
+ * @license   GPL-2.0
  */
 
 namespace Spec\FilePathNormalizer;
 
-use FilePathNormalizer\FilePathNormalizerAwareInterface;
-use FilePathNormalizer\FilePathNormalizerTrait;
+use FilePathNormalizer\PathInfoAwareInterface;
+use FilePathNormalizer\PathInfoTrait;
 
 /**
- * Class MockFilePathNormalizerTrait
+ * Class MockPathInfoTrait.
+ *
+ * @since 2.0.0-dev New path info awareness.
  */
-class MockFilePathNormalizerTrait implements FilePathNormalizerAwareInterface
+class MockPathInfoTrait implements PathInfoAwareInterface
 {
-    use FilePathNormalizerTrait;
+    use PathInfoTrait;
     /**
-     * MockFilePathNormalizerTrait constructor.
+     * MockPathInfoTrait constructor.
      */
     public function __construct()
     {

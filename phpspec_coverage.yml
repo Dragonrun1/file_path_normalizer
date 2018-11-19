@@ -1,12 +1,13 @@
 suites:
     fpn_suite:
         namespace: FilePathNormalizer
-        psr4_prefix: FilePathNormalizer
+        psr4_prefix:
         spec_path: specs
         spec_prefix: Spec
         src_path: src
 extensions:
     PhpSpec\NyanFormattersExtension\Extension: ~
+    LeanPHP\PhpSpec\CodeCoverage\CodeCoverageExtension: ~
 formatter.name: dot
 code_coverage:
     blacklist:
