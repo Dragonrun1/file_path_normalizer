@@ -31,16 +31,17 @@
     "license": "GPL-2.0",
     "minimum-stability": "stable",
     "require": {
-        "php": ">7.0,<7.2"
+        "php": ">=7.1 <7.4",
+        "ext-ctype": "*"
     },
     "require-dev": {
-        "henrikbjorn/phpspec-code-coverage": "dev-master",
-        "phpspec/nyan-formatters": "~2.0.0",
-        "phpspec/phpspec": "~3.1.0",
-        "phpunit/php-code-coverage": "~4.0",
-        "satooshi/php-coveralls": "dev-master"
+        "phpspec/nyan-formatters": ">=2.0.0 <3.0.0",
+        "phpspec/phpspec": ">=4.0 <5.0.0",
+        "phpunit/php-code-coverage": ">=5.0 <6.0.0",
+        "satooshi/php-coveralls": "dev-master",
+        "leanphp/phpspec-code-coverage": ">=4.2 <5.0.0"
     },
     "replace": {
-        "dragonrun1/file_path_normalizer": "2.0.*"
+        "dragonrun1/file_path_normalizer": "2.1.*"
     }
 }
