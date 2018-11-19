@@ -1,14 +1,14 @@
 <?php
-declare(strict_types = 1);
+declare(strict_types=1);
 /**
  * Contains trait PathInfoTrait.
  *
- * PHP version 7.0
+ * PHP version 7.1
  *
  * LICENSE:
  * This file is part of file_path_normalizer which is used to normalize PHP file
  * paths without several of the shortcomings of the built-in functions.
- * Copyright (C) 2016 Michael Cummings
+ * Copyright (C) 2016-2018 Michael Cummings
  *
  * This program is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -26,9 +26,10 @@ declare(strict_types = 1);
  * You should be able to find a copy of this license in the LICENSE file.
  *
  * @author    Michael Cummings <mgcummings@yahoo.com>
- * @copyright 2016 Michael Cummings
+ * @copyright 2016-2018 Michael Cummings
  * @license   GPL-2.0
  */
+
 namespace FilePathNormalizer;
 
 /**
@@ -56,7 +57,7 @@ trait PathInfoTrait
      * @return PathInfoAwareInterface|PathInfoTrait Fluent interface.
      * @api
      */
-    public function setPathInfo(PathInfoInterface $value = null): PathInfoAwareInterface
+    public function setPathInfo(?PathInfoInterface $value = null): PathInfoAwareInterface
     {
         $this->pathInfo = $value;
         return $this;

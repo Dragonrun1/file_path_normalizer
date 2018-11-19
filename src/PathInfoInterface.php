@@ -1,10 +1,35 @@
 <?php
+declare(strict_types=1);
 /**
- * Created by PhpStorm.
- * User: Dragonaire
- * Date: 7/19/2016
- * Time: 11:25 PM
+ * Contains interface PathInfoInterface.
+ *
+ * PHP version 7.1
+ *
+ * LICENSE:
+ * This file is part of file_path_normalizer which is used to normalize PHP file
+ * paths without several of the shortcomings of the built-in functions.
+ * Copyright (C) 2016-2018 Michael Cummings
+ *
+ * This program is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the
+ * Free Software Foundation, version 2 of the License.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program. If not, see
+ * <http://spdx.org/licenses/GPL-2.0.html>.
+ *
+ * You should be able to find a copy of this license in the LICENSE file.
+ *
+ * @author    Michael Cummings <mgcummings@yahoo.com>
+ * @copyright 2016-2018 Michael Cummings
+ * @license   GPL-2.0
  */
+
 namespace FilePathNormalizer;
 
 /**
@@ -25,43 +50,43 @@ interface PathInfoInterface
      *
      * @return array
      */
-    public function getDirList() : array;
+    public function getDirList(): array;
     /**
      * @return string
      */
-    public function getDirs() : string;
+    public function getDirs(): string;
     /**
      * @return string
      */
-    public function getPath() : string;
+    public function getPath(): string;
     /**
      * @return string
      */
-    public function getRoot() : string;
+    public function getRoot(): string;
     /**
      * @return array
      */
-    public function getWrapperList() : array;
+    public function getWrapperList(): array;
     /**
      * @return string
      */
-    public function getWrappers() : string;
+    public function getWrappers(): string;
     /**
      * @return bool
      */
-    public function hasDirs() : bool;
+    public function hasDirs(): bool;
     /**
      * @return bool
      */
-    public function hasWrappers() : bool;
+    public function hasWrappers(): bool;
     /**
      * @param string $path
      *
      * @return $this Fluent interface.
      */
-    public function initAll(string $path);
+    public function initAll(string $path): self;
     /**
      * @return bool
      */
-    public function isAbsolutePath() : bool;
+    public function isAbsolutePath(): bool;
 }

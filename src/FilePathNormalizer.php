@@ -1,9 +1,9 @@
 <?php
-declare(strict_types = 1);
+declare(strict_types=1);
 /**
  * Contains FilePathNormalizer class.
  *
- * PHP version 7.0
+ * PHP version 7.1
  *
  * LICENSE:
  * This file is part of file_path_normalizer which is used to normalize PHP file
@@ -32,6 +32,7 @@ declare(strict_types = 1);
 /**
  * Main namespace.
  */
+
 namespace FilePathNormalizer;
 
 /**
@@ -47,7 +48,7 @@ class FilePathNormalizer implements FilePathNormalizerInterface, PathInfoAwareIn
      *
      * @param PathInfoInterface|null $pathInfo
      */
-    public function __construct(PathInfoInterface $pathInfo = null)
+    public function __construct(?PathInfoInterface $pathInfo = null)
     {
         $this->pathInfo = $pathInfo;
     }
@@ -70,19 +71,19 @@ class FilePathNormalizer implements FilePathNormalizerInterface, PathInfoAwareIn
      */
     public function normalizeFile(string $file, int $options = self::MODE_DEFAULT): string
     {
-        $file = str_replace('\\', '/', $file);
-        if (false === strrpos($file, '/')) {
+        $file = \str_replace('\\', '/', $file);
+        if (false === \strrpos($file, '/')) {
             $mess = 'An empty path is NOT allowed';
             throw new \DomainException($mess);
         }
-        list($fileName, $path) = explode('/', strrev($file), 2);
-        $path = strrev($path);
-        $fileName = trim(strrev($fileName));
+        [$fileName, $path] = \explode('/', \strrev($file), 2);
+        $path = \strrev($path);
+        $fileName = \trim(strrev($fileName));
         if ('' === $fileName) {
             $mess = 'An empty file name is NOT allowed';
             throw new \DomainException($mess);
         }
-        if (!ctype_print($fileName)) {
+        if (!\ctype_print($fileName)) {
             $mess = 'Using any non-printable characters in the file name is NOT allowed';
             throw new \DomainException($mess);
         }
@@ -118,13 +119,13 @@ class FilePathNormalizer implements FilePathNormalizerInterface, PathInfoAwareIn
         $this->absoluteChecks($options);
         $path = '';
         if ($pathInfo->hasWrappers()) {
-            $path .= implode('://', $pathInfo->getWrapperList()) . '://';
+            $path .= \implode('://', $pathInfo->getWrapperList()) . '://';
         }
-        $path .= $pathInfo->getRoot() . implode('/', $this->cleanPartsPath()) . '/';
+        $path .= $pathInfo->getRoot() . \implode('/', $this->cleanPartsPath()) . '/';
         return $path;
     }
     /**
-     * @param int    $options
+     * @param int $options
      *
      * @throws \DomainException
      */
@@ -165,7 +166,7 @@ class FilePathNormalizer implements FilePathNormalizerInterface, PathInfoAwareIn
         }
         $wrappers = $this->getPathInfo()
                          ->getWrapperList();
-        $hasVfs = in_array('vfs', $wrappers, true);
+        $hasVfs = \in_array('vfs', $wrappers, true);
         if (($options & self::VFS_DISABLED) && $hasVfs) {
             $mess = 'Found vfsStream wrapper when it was disabled';
             throw new \DomainException($mess);
@@ -174,24 +175,23 @@ class FilePathNormalizer implements FilePathNormalizerInterface, PathInfoAwareIn
             $mess = 'Missing vfsStream wrapper when it was required';
             throw new \DomainException($mess);
         }
-        /** @noinspection LowPerformanceArrayUniqueUsageInspection */
         /*
          * Though technically allowed duplicate wrappers are most likely to be
          * user errors, programming bugs, or at least a bad programming smell.
          */
-        if (count($wrappers) !== count(array_unique($wrappers))) {
+        if (\count($wrappers) !== \count(\array_unique($wrappers))) {
             $mess = 'Duplicate wrappers are not allowed';
             throw new \DomainException($mess);
         }
         $regExp = '%^[[:alpha:]][[:alnum:]]+$%';
-        if (false === array_reduce($wrappers, function ($carry, $item) use ($regExp) {
-                return $carry && preg_match($regExp, $item);
+        if (false === \array_reduce($wrappers, function ($carry, $item) use ($regExp) {
+                return $carry && \preg_match($regExp, $item);
             }, true)
         ) {
             $mess = 'Invalidly formatted wrapper name found';
             throw new \DomainException($mess);
         }
-        $last = array_pop($wrappers);
+        $last = \array_pop($wrappers);
         if ($hasVfs && 'vfs' !== $last) {
             $mess = 'Must use vfsStream as last wrapper';
             throw new \DomainException($mess);
@@ -220,11 +220,11 @@ class FilePathNormalizer implements FilePathNormalizerInterface, PathInfoAwareIn
                  * unusual paths probably cause by errors or to access
                  * something unexpected anyway.
                  */
-                if (count($parts) < 1) {
+                if (\count($parts) < 1) {
                     $mess = 'Unusual above root path found';
                     throw new \DomainException($mess);
                 }
-                array_pop($parts);
+                \array_pop($parts);
                 continue;
             }
             $parts[] = $part;
@@ -260,6 +260,5 @@ class FilePathNormalizer implements FilePathNormalizerInterface, PathInfoAwareIn
                 throw new \DomainException($mess);
             }
         }
-        // Pointless combos.
     }
 }

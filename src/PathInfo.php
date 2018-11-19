@@ -1,14 +1,14 @@
 <?php
-declare(strict_types = 1);
+declare(strict_types=1);
 /**
  * Contains class PathInfo.
  *
- * PHP version 7.0
+ * PHP version 7.1
  *
  * LICENSE:
  * This file is part of file_path_normalizer which is used to normalize PHP file
  * paths without several of the shortcomings of the built-in functions.
- * Copyright (C) 2016 Michael Cummings
+ * Copyright (C) 2016-2018 Michael Cummings
  *
  * This program is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -26,9 +26,10 @@ declare(strict_types = 1);
  * You should be able to find a copy of this license in the LICENSE file.
  *
  * @author    Michael Cummings <mgcummings@yahoo.com>
- * @copyright 2016 Michael Cummings
+ * @copyright 2016-2018 Michael Cummings
  * @license   GPL-2.0
  */
+
 namespace FilePathNormalizer;
 
 /**
@@ -65,15 +66,15 @@ class PathInfo implements PathInfoInterface
         if (!$this->hasDirs()) {
             return [];
         }
-        $path = str_replace('\\', '/', trim($this->dirs));
+        $path = \str_replace('\\', '/', \trim($this->dirs));
         // Drop any leading and trailing "/"s.
-        $path = trim($path, '/');
+        $path = \trim($path, '/');
         // Drop pointless consecutive "/"s.
-        while (false !== strpos($path, '//')) {
-            $path = str_replace('//', '/', $path);
+        while (false !== \strpos($path, '//')) {
+            $path = \str_replace('//', '/', $path);
         }
         if ('' !== $path) {
-            return explode('/', $path);
+            return \explode('/', $path);
         }
         return [];
     }
@@ -104,9 +105,9 @@ class PathInfo implements PathInfoInterface
     public function getWrapperList(): array
     {
         if ($this->hasWrappers()) {
-            $wrappers = explode('://', $this->wrappers);
+            $wrappers = \explode('://', $this->wrappers);
             // Discard empty artifact.
-            array_pop($wrappers);
+            \array_pop($wrappers);
             return $wrappers;
         }
         return [];
@@ -123,14 +124,14 @@ class PathInfo implements PathInfoInterface
      */
     public function hasDirs(): bool
     {
-        return (bool)strlen($this->dirs);
+        return (bool)\strlen($this->dirs);
     }
     /**
      * @return bool
      */
     public function hasWrappers(): bool
     {
-        return (bool)strlen($this->wrappers);
+        return (bool)\strlen($this->wrappers);
     }
     /**
      * @param string $path
@@ -141,7 +142,7 @@ class PathInfo implements PathInfoInterface
     public function initAll(string $path): PathInfoInterface
     {
         $this->path = $path;
-        list($this->wrappers, $this->root, $this->dirs) = $this->getPathParts();
+        [$this->wrappers, $this->root, $this->dirs] = $this->getPathParts();
         return $this;
     }
     /**
@@ -149,7 +150,7 @@ class PathInfo implements PathInfoInterface
      */
     public function isAbsolutePath(): bool
     {
-        return (bool)strlen($this->root);
+        return (bool)\strlen($this->root);
     }
     /**
      * @return array
@@ -157,16 +158,16 @@ class PathInfo implements PathInfoInterface
      */
     protected function getPathParts(): array
     {
-        $path = trim($this->path);
+        $path = \trim($this->path);
         if ('' === $path) {
             $mess = 'An empty path is NOT allowed';
             throw new \DomainException($mess);
         }
-        if (!ctype_print($path)) {
+        if (!\ctype_print($path)) {
             $mess = 'Using any non-printable characters in the path is NOT allowed';
             throw new \DomainException($mess);
         }
-        $path = str_replace('\\', '/', $path);
+        $path = \str_replace('\\', '/', $path);
         // Optional wrapper(s).
         $regExp = '%^(?<w>(?:[[:print:]]{2,}://)*)';
         // Optional root prefix.
@@ -174,7 +175,7 @@ class PathInfo implements PathInfoInterface
         // Actual path.
         $regExp .= '(?<p>(?:.*))$%';
         $parts = [];
-        if (!preg_match($regExp, $path, $parts)) {
+        if (!\preg_match($regExp, $path, $parts)) {
             $mess = 'Path is invalid for unknown reason. Please report this bug.';
             throw new \DomainException($mess);
         }

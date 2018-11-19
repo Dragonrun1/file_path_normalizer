@@ -1,9 +1,9 @@
 <?php
-declare(strict_types = 1);
+declare(strict_types=1);
 /**
  * Contains FilePathNormalizerTrait Trait.
  *
- * PHP version 7.0
+ * PHP version 7.1
  *
  * LICENSE:
  * This file is part of file_path_normalizer which is used to normalize PHP file
@@ -32,6 +32,7 @@ declare(strict_types = 1);
 /**
  * Main namespace.
  */
+
 namespace FilePathNormalizer;
 
 /**

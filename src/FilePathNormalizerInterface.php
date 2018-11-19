@@ -1,9 +1,9 @@
 <?php
-declare(strict_types = 1);
+declare(strict_types=1);
 /**
  * Contains FilePathNormalizerInterface Interface.
  *
- * PHP version 7.0
+ * PHP version 7.1
  *
  * LICENSE:
  * This file is part of file_path_normalizer which is used to normalize PHP file
@@ -32,6 +32,7 @@ declare(strict_types = 1);
 /**
  * Main namespace.
  */
+
 namespace FilePathNormalizer;
 
 /**
@@ -50,64 +51,65 @@ interface FilePathNormalizerInterface
      *
      * @since 1.1.0-dev Absolute required to options conversion.
      */
-    const ABSOLUTE_ALLOWED = 1;
+    public const ABSOLUTE_ALLOWED = 1;
     /**
      * Allows only relative path.
      *
      * @since 1.1.0-dev Absolute required to options conversion.
      */
-    const ABSOLUTE_DISABLED = 2;
+    public const ABSOLUTE_DISABLED = 2;
     /**
      * Absolute path required.
      *
      * @since 1.1.0-dev Absolute required to options conversion.
      */
-    const ABSOLUTE_REQUIRED = 4;
+    public const ABSOLUTE_REQUIRED = 4;
     /**
      * Sets mode that is backwards compatible with earlier versions of File Path Normalizer.
      *
      * Absolute path required, Virtual Filesystem Stream allowed, wrapper allowed.
      *
      * @since 1.1.0-dev Absolute required to options conversion.
-     * @since 2.0.0-dev Absolute required and Virtual Filesystem Stream allowed no longer compatible together. VFS_DISABLED now used.
+     * @since 2.0.0-dev Absolute required and Virtual Filesystem Stream allowed no longer compatible together.
+     *        VFS_DISABLED now used.
      */
-    const MODE_DEFAULT = self::ABSOLUTE_REQUIRED | self::VFS_DISABLED | self::WRAPPER_ALLOWED;
+    public const MODE_DEFAULT = self::ABSOLUTE_REQUIRED | self::VFS_DISABLED | self::WRAPPER_ALLOWED;
     /**
      * Allows use of VFSStream wrapper.
      *
      * @since 1.1.0-dev Absolute required to options conversion.
      */
-    const VFS_ALLOWED = 8;
+    public const VFS_ALLOWED = 8;
     /**
      * Disables use of VFSStream.
      *
      * @since 1.1.0-dev Absolute required to options conversion.
      */
-    const VFS_DISABLED = 16;
+    public const VFS_DISABLED = 16;
     /**
      * Require VFSStream in wrappers.
      *
      * @since 2.0.0-dev Added as might be useful for testing.
      */
-    const VFS_REQUIRED = 32;
+    public const VFS_REQUIRED = 32;
     /**
      * Allows path to have optional wrappers.
      *
      * @since 1.1.0-dev Absolute required to options conversion.
      */
-    const WRAPPER_ALLOWED = 64;
+    public const WRAPPER_ALLOWED = 64;
     /**
      * Disables path from have any wrappers.
      *
      * @since 1.1.0-dev Absolute required to options conversion.
      */
-    const WRAPPER_DISABLED = 128;
+    public const WRAPPER_DISABLED = 128;
     /**
      * Makes use of one or more wrapper required.
      *
      * @since 1.1.0-dev Absolute required to options conversion.
      */
-    const WRAPPER_REQUIRED = 256;
+    public const WRAPPER_REQUIRED = 256;
     /**
      * Used to normalize a file with a path.
      *
