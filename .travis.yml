@@ -15,4 +15,4 @@ script:
     - mkdir -p build
     - phpdbg -qrr -f vendor/phpspec/phpspec/bin/phpspec --no-interaction --config=phpspec_coverage.yml run
 after_success:
-    - travis_retry php vendor/bin/coveralls -v
+    - travis_retry php vendor/bin/php-coveralls -v
