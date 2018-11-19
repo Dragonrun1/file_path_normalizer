@@ -1,64 +1,70 @@
 <?php
+declare(strict_types=1);
+
 /**
- * Contains auto loader bootstrap.
+ * Contains Bootstrap.
  *
- * PHP version 5.4
+ * PHP version 7.1
  *
  * LICENSE:
  * This file is part of file_path_normalizer which is used to normalize PHP file
  * paths without several of the shortcomings of the built-in functions.
- * Copyright (C) 2015 Michael Cummings
+ * Copyright (C) 2014-2018 Michael Cummings
  *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the Free
- * Software Foundation; version 2 of the License.
+ * This program is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by the
+ * Free Software Foundation, either version 3 of the License, or (at your
+ * option) any later version.
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License
+ * for more details.
  *
- * You should have received a copy of the GNU General Public License along with
- * this program; if not, you may write to
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program. If not, see
+ * <http://spdx.org/licenses/LGPL-3.0.html>.
  *
- * Free Software Foundation, Inc.
- * 59 Temple Place, Suite 330
- * Boston, MA 02111-1307 USA
+ * You should be able to find a copy of this license in the COPYING-LESSER.md
+ * file. A copy of the GNU GPL should also be available in the COPYING.md file.
  *
- * or find a electronic copy at
- * <http://www.gnu.org/licenses/>.
- *
- * You should also be able to find a copy of this license in the included
- * LICENSE file.
- *
- * @copyright 2015 Michael Cummings
- * @license   http://www.gnu.org/licenses/gpl-2.0.html GNU GPL-2.0
+ * @copyright 2014-2018 Michael Cummings
+ * @license   LGPL-3.0+
  * @author    Michael Cummings <mgcummings@yahoo.com>
  */
+
+use Composer\Autoload\ClassLoader;
+
 /*
- * Turn off warning messages for the following includes.
+ * Nothing to do if Composer auto loader already exists.
+ */
+if (class_exists(ClassLoader::class, false)) {
+    return 0;
+}
+/*
+ * Find Composer auto loader after striping away any vendor path.
+ */
+$path = str_replace('\\', '/', dirname(__DIR__));
+$vendorPos = strpos($path, 'vendor/');
+if (false !== $vendorPos) {
+    $path = substr($path, 0, $vendorPos);
+}
+$path .= '/vendor/autoload.php';
+/*
+ * Turn off warning messages for the following include.
  */
 $errorReporting = error_reporting(E_ALL & ~E_WARNING);
-/*
- * Find auto loader from one of
- * vendor/bin/
- * OR ./
- * OR bin/
- * OR src/Project/
- * OR vendor/Project/Project/
- */
-(include_once dirname(__DIR__) . '/autoload.php')
-|| (include_once __DIR__ . '/vendor/autoload.php')
-|| (include_once dirname(__DIR__) . '/vendor/autoload.php')
-|| (include_once dirname(dirname(__DIR__)) . '/vendor/autoload.php')
-|| (include_once dirname(dirname(dirname(__DIR__))) . '/autoload.php');
+/** @noinspection PhpIncludeInspection */
+include_once $path;
 error_reporting($errorReporting);
-unset($errorReporting);
-if (!class_exists('\\Composer\\Autoload\\ClassLoader', false)) {
+unset($errorReporting, $path, $vendorPos);
+if (!class_exists(ClassLoader::class, false)) {
+    $mess = 'Could NOT find required Composer class auto loader. Aborting ...';
     if ('cli' === PHP_SAPI) {
-        $mess
-            = 'Could NOT find required Composer class auto loader. Aborting ...';
         fwrite(STDERR, $mess);
+    } else {
+        fwrite(STDOUT, $mess);
     }
-    return 1;
+    unset($mess);
+    exit(1);
 }
