@@ -13,6 +13,9 @@ php:
     - 7.3
 script:
     - mkdir -p build
-    - phpdbg -qrr -f vendor/phpspec/phpspec/bin/phpspec --no-interaction --config=phpspec_coverage.yml run
+    - phpdbg -qrr -f vendor/phpspec/phpspec/bin/phpspec --no-interaction --config=phpspec_travis_coverage.yml run
 after_success:
-    - travis_retry php vendor/bin/php-coveralls -v
+    - travis_retry composer require --dev php-coveralls/php-coveralls\
+        && php vendor/bin/php-coveralls -v
+    - travis_retry wget https://scrutinizer-ci.com/ocular.phar\
+        && php ocular.phar code-coverage:upload --format=php-clover build/clover.xml
